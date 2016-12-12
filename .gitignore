@@ -5,6 +5,7 @@
 /.idea/libraries
 /.idea/misc.xml
 /.idea/vcs.xml
+projectFilesBackup/
 .DS_Store
 /build
 /app/app-release.apk
