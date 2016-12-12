@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:colorBackground">@color/backgroundColor</item>
+        <item name="cardBackgroundColor">@color/cardBackgroundColor</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -19,4 +20,34 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat">
     <item name="android:colorBackground">@color/backgroundColor</item>
 </style>
+
+    <style name="CustomAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:color">@android:color/white</item>
+        <item name="android:icon">@android:color/white</item>
+        <item name="android:divider">@android:color/white</item>
+        <item name="android:colorBackground">@color/backgroundColor</item>
+        <item name="colorButtonNormal">@android:color/white</item>
+        <item name="android:textColorHint">@color/text_color_hint</item>
+        <item name="cardBackgroundColor">@color/cardBackgroundColor</item>
+        <item name="android:colorControlNormal">@android:color/white</item>
+        <item name="android:colorControlActivated">@android:color/white</item>
+        <item name="android:textColorPrimaryDisableOnly">@android:color/white</item>
+        <item name="android:textColorAlertDialogListItem">@android:color/white</item>
+    </style>
+
+    <style name="Cerveza2" parent="CustomAppTheme">
+        <item name="android:colorBackground">@color/background_material_dark_spinner</item>
+        <item name="android:textColorPrimary">@color/text_color_hint</item>
+        <item name="android:colorForeground">@color/text_color_hint</item>
+        <item name="android:checkMark">?android:attr/listChoiceIndicatorSingle</item>
+        <item name="android:textColorSecondary">@color/text_color_hint</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
 </resources>

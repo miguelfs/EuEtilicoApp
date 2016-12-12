@@ -6,4 +6,8 @@
     <color name="backgroundColor">#37474f</color>
 
     <color name="text_color_hint">#bbffffff</color>
+    <color name="cardBackgroundColor">#F0A800</color>
+    <color name="background_material_dark_spinner">#303030</color>
+
+
 </resources>

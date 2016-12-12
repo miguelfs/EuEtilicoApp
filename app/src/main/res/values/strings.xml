@@ -6,4 +6,47 @@
     <string name="_10percent">10%</string>
     <string name="product_name_hint">Comida/Bebida</string>
     <string name="price_hint">Preço</string>
+
+    <string-array name="units_array">
+        <item>1 Unidade</item>
+        <item>2 Unidades</item>
+        <item>3 Unidades</item>
+        <item>4 Unidades</item>
+        <item>5 Unidades</item>
+        <item>6 Unidades</item>
+        <item>7 Unidades</item>
+        <item>8 Unidades</item>
+        <item>9 Unidades</item>
+        <item>10 Unidades</item>
+        <item>11 Unidades</item>
+        <item>12 Unidades</item>
+        <item>13 Unidades</item>
+        <item>14 Unidades</item>
+        <item>15 Unidades</item>
+        <item>16 Unidades</item>
+        <item>17 Unidades</item>
+        <item>18 Unidades</item>
+        <item>19 Unidades</item>
+        <item>20 Unidades</item>
+        <item>21 Unidades</item>
+        <item>22 Unidades</item>
+        <item>23 Unidades</item>
+        <item>24 Unidades</item>
+        <item>25 Unidades</item>
+        <item>26 Unidades</item>
+        <item>27 Unidades</item>
+        <item>28 Unidades</item>
+        <item>29 Unidades</item>
+        <item>30 Unidades</item>
+        <item>31 Unidades</item>
+        <item>32 Unidades</item>
+        <item>33 Unidades</item>
+        <item>34 Unidades</item>
+        <item>35 Unidades</item>
+        <item>36 Unidades</item>
+        <item>37 Unidades</item>
+        <item>38 Unidades</item>
+        <item>39 Unidades</item>
+        <item>40 Unidades</item>
+    </string-array>
 </resources>
