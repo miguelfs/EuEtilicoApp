@@ -2,4 +2,8 @@
     <string name="app_name">Eu Etilico</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="action_clear">Reiniciar Conta</string>
+    <string name="_10percent">10%</string>
+    <string name="product_name_hint">Comida/Bebida</string>
+    <string name="price_hint">Preço</string>
 </resources>

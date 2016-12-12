@@ -1,4 +1,4 @@
-package com.partiufast.euetilicoapp.ui;
+package com.partiufast.euetilicoapp.ui.fragments;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -6,13 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.partiufast.euetilicoapp.R;
-
-/**
- * Created by Miguel on 12/12/2016.
- */
 
 public class ProductListFragment extends Fragment {
 
