@@ -3,6 +3,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -48,10 +49,10 @@
             />
 
         <Spinner
-            android:theme="@style/Cerveza2"
+            android:theme="@style/SpinnerTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/unitsSpinner"
+            android:id="@+id/productCountSpinner"
             android:layout_below="@+id/productNameTextView"
             android:entries="@array/units_array"
             android:layout_alignParentLeft="true"
@@ -60,14 +61,16 @@
             />
 
         <com.partiufast.euetilicoapp.ui.customviews.MultiSelectionSpinner
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/productPriceTextView"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="false"
-            android:layout_toEndOf="@+id/unitsSpinner"
-            android:layout_toRightOf="@+id/unitsSpinner">
+            android:layout_toEndOf="@+id/productCountSpinner"
+            android:layout_toRightOf="@+id/productCountSpinner"
+            android:id="@+id/productPersonListSpinner"
+            >
 
         </com.partiufast.euetilicoapp.ui.customviews.MultiSelectionSpinner>
 

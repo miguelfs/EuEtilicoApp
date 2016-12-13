@@ -1,24 +1,27 @@
 package com.partiufast.euetilicoapp.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * Created by Miguel on 03/06/2016.
  */
-public class ProductItem {
+public class ProductItem implements Parcelable {
     private String mProductName;
     private BigDecimal mProductPrice;
     private int mProductCount;
-    private List<String> mProductPersonList;
+    private List<String> mProductCustomerList;
 
 
-    public ProductItem(String productName, BigDecimal productPrice, int productCount, List<String> productPersonList) {
+    public ProductItem(String productName, BigDecimal productPrice, int productCount, List<String> productCustomerList) {
 
             mProductName = productName;
         mProductPrice = productPrice;
         mProductCount = productCount;
-        mProductPersonList = productPersonList;
+        mProductCustomerList = productCustomerList;
     }
 
     public String getProductName() {
@@ -45,17 +48,17 @@ public class ProductItem {
         mProductCount = productCount;
     }
 
-    public List<String> getProductPersonList() {
-        return mProductPersonList;
+    public List<String> getProductCustomerList() {
+        return mProductCustomerList;
     }
 
-    public void setProductPersonList(List<String> productPersonList) {
-        mProductPersonList = productPersonList;
+    public void setProductCustomerList(List<String> productCustomerList) {
+        mProductCustomerList = productCustomerList;
     }
 
     public boolean checkIfListHasName(String name) {
-        for (int i = 0; i < mProductPersonList.size(); i++)
-            if (mProductPersonList.get(i).equals(name))
+        for (int i = 0; i < mProductCustomerList.size(); i++)
+            if (mProductCustomerList.get(i).equals(name))
                 return true;
         return false;
     }
@@ -68,4 +71,37 @@ public class ProductItem {
         }
         return "";
         }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mProductName);
+        dest.writeSerializable(this.mProductPrice);
+        dest.writeInt(this.mProductCount);
+        dest.writeStringList(this.mProductCustomerList);
+    }
+
+    protected ProductItem(Parcel in) {
+        this.mProductName = in.readString();
+        this.mProductPrice = (BigDecimal) in.readSerializable();
+        this.mProductCount = in.readInt();
+        this.mProductCustomerList = in.createStringArrayList();
+    }
+
+    public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
+        @Override
+        public ProductItem createFromParcel(Parcel source) {
+            return new ProductItem(source);
+        }
+
+        @Override
+        public ProductItem[] newArray(int size) {
+            return new ProductItem[size];
+        }
+    };
+}

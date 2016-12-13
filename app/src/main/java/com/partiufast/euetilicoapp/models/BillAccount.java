@@ -11,8 +11,8 @@ import java.util.List;
  * Created by Miguel on 19/06/2016.
  */
 public class BillAccount {
-    private List<ProductItem> mProductItemList;
-    private List<PersonItem> mPersonItemList;
+    private ArrayList<ProductItem> mProductItemList = new ArrayList<ProductItem>();
+    private ArrayList<CustomerItem> mCustomerItemList = new ArrayList<CustomerItem>();
     boolean is10PercentOn;
     private BigDecimal mTotalPrice;
     private String mPlaceName;
@@ -22,11 +22,11 @@ public class BillAccount {
     private long mEndTime;
     private static BigDecimal TENPERCENT = new BigDecimal(1.1);
 
-    public BillAccount(List<ProductItem> productItemList, List<PersonItem> personItemList,
+    public BillAccount(ArrayList<ProductItem> productItemList, ArrayList<CustomerItem> customerItemList,
                        boolean is10PercentOn, BigDecimal totalPrice, String placeName, Location location,
                        GregorianCalendar gregorianCalendar, long startTime, long endTime) {
         mProductItemList = productItemList;
-        mPersonItemList = personItemList;
+        mCustomerItemList = customerItemList;
         this.is10PercentOn = is10PercentOn;
         mTotalPrice = totalPrice;
         mPlaceName = placeName;
@@ -36,27 +36,40 @@ public class BillAccount {
         mEndTime = endTime;
     }
 
-    public BillAccount(){
-        mPersonItemList = new ArrayList<PersonItem>();
+    public BillAccount() {
+        mCustomerItemList = new ArrayList<CustomerItem>();
         mProductItemList = new ArrayList<ProductItem>();
     }
 
+    public BillAccount(ArrayList<ProductItem> productItemList, ArrayList<CustomerItem> customerItemList) {
+        mProductItemList.clear();
+        mProductItemList.addAll(productItemList);
+        mCustomerItemList.clear();
+        mCustomerItemList.addAll(customerItemList);
+    }
 
-    public List<ProductItem> getProductItemList() {
+    public void setBillAccount(ArrayList<ProductItem> productItemList, ArrayList<CustomerItem> customerItemList) {
+        mProductItemList.clear();
+        mProductItemList.addAll(productItemList);
+        mCustomerItemList.clear();
+        mCustomerItemList.addAll(customerItemList);
+    }
+
+
+    public ArrayList<ProductItem> getProductItemList() {
         return mProductItemList;
     }
 
-    public void setProductItemList(List<ProductItem> productItemList) {
+    public void setProductItemList(ArrayList<ProductItem> productItemList) {
         mProductItemList = productItemList;
-
     }
 
-    public List<PersonItem> getPersonItemList() {
-        return mPersonItemList;
+    public ArrayList<CustomerItem> getCustomerItemList() {
+        return mCustomerItemList;
     }
 
-    public void setPersonItemList(List<PersonItem> personItemList) {
-        mPersonItemList = personItemList;
+    public void setCustomerItemList(ArrayList<CustomerItem> customerItemList) {
+        mCustomerItemList = customerItemList;
     }
 
     public boolean is10PercentOn() {
@@ -65,8 +78,8 @@ public class BillAccount {
 
     public void setIs10PercentOn(boolean is10PercentOn) {
         this.is10PercentOn = is10PercentOn;
-        for (int personIterator = 0; personIterator < mPersonItemList.size(); personIterator ++ )
-            mPersonItemList.get(personIterator).setIs10PercentOn(is10PercentOn);
+        for (int personIterator = 0; personIterator < mCustomerItemList.size(); personIterator++)
+            mCustomerItemList.get(personIterator).setIs10PercentOn(is10PercentOn);
     }
 
     public BigDecimal getTotalPrice() {
@@ -117,7 +130,7 @@ public class BillAccount {
         mEndTime = endTime;
     }
 
-    public void updateBill(){
+    public void updateBill() {
         updateTotalPrice();
         setPersonItems();
         updatePersonListPrices();
@@ -135,23 +148,23 @@ public class BillAccount {
         }
     }
 
-    public void setPersonItems(){
-        for (int personIterator = 0; personIterator < mPersonItemList.size(); personIterator ++ ){
+    public void setPersonItems() {
+        for (int personIterator = 0; personIterator < mCustomerItemList.size(); personIterator++) {
             List<ProductItem> productBufferList = new ArrayList<>();
-            for (int productIterator = 0; productIterator < mProductItemList.size(); productIterator ++){
-                if (mProductItemList.get(productIterator).checkIfListHasName(mPersonItemList.get(personIterator).getPersonName())){
-                   productBufferList.add(mProductItemList.get(productIterator));
+            for (int productIterator = 0; productIterator < mProductItemList.size(); productIterator++) {
+                if (mProductItemList.get(productIterator).checkIfListHasName(mCustomerItemList.get(personIterator).getCustomerName())) {
+                    productBufferList.add(mProductItemList.get(productIterator));
                 }
             }
-            mPersonItemList.get(personIterator).setProductItemList(productBufferList);
+            mCustomerItemList.get(personIterator).setProductItemList(productBufferList);
         }
     }
 
-    public void updatePersonListPrices(){
-        for (int index = 0; index < mPersonItemList.size(); index++){
-            mPersonItemList.get(index).updatePrice();
+    public void updatePersonListPrices() {
+        for (int index = 0; index < mCustomerItemList.size(); index++) {
+            mCustomerItemList.get(index).updatePrice();
         }
     }
 
 
-    }
+}
