@@ -49,4 +49,5 @@
         <item>39 Unidades</item>
         <item>40 Unidades</item>
     </string-array>
+    <string name="title_activity_test">TestActivity</string>
 </resources>
