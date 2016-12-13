@@ -2,6 +2,9 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+
+
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
@@ -34,19 +37,92 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <LinearLayout
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:background="@color/backgroundColor"
+        app:layout_behavior="com.partiufast.euetilicoapp.animations.BottomNavigationBehavior"
+        android:paddingBottom="2dp"
+        android:elevation="@dimen/design_fab_elevation"
+        >
+
+        <TextView
+            android:id="@+id/totalPriceIntroTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="4sp"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif"
+            android:gravity="end"
+            android:text="Custo do consumo total\n\rem R$"
+            android:textColor="@android:color/white"
+            android:textStyle="italic"/>
+
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/totalPriceValueTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif"
+            android:text="0.00"
+            android:textColor="@android:color/white"
+            android:textSize="54sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:gravity="center_horizontal"
+            />
+    </LinearLayout>
+
+
+
+    <com.github.clans.fab.FloatingActionMenu
+        app:layout_behavior="com.partiufast.euetilicoapp.animations.BottomNavigationBehavior"
+        android:id="@+id/fab_menu"
+        android:elevation="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:paddingRight="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="72dp"
+        fab:menu_labels_ellipsize="end"
+        fab:menu_labels_singleLine="true"
+        fab:menu_backgroundColor="#bbffffff"
+        fab:menu_colorNormal="@color/colorPrimaryDark"
+        fab:menu_fab_label="Menu label">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_shopping_cart_white_24dp"
+            fab:fab_size="mini"
+            fab:menu_colorNormal="@color/colorPrimaryDark"
+            fab:fab_label="Adicionar Produto" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_person_add_white_24dp"
+            fab:fab_size="mini"
+            fab:menu_colorNormal="@color/colorPrimaryDark"
+            fab:fab_label="Adicionar Consumidor" />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_input_add"/>
 
 
 </android.support.design.widget.CoordinatorLayout>

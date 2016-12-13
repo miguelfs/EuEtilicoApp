@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.partiufast.euetilicoapp.R;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
     private String mJSONProducts, mJSONCustomers;
+    private CheckBox mCheckBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        CheckBox checkBox = (CheckBox) getLayoutInflater().inflate(R.layout.custom_checkbox, null);
-        checkBox.setOnCheckedChangeListener(new OnTipCheckboxChangeListener(mBillAccount));
-        toolbar.addView(checkBox);
+        mCheckBox = (CheckBox) getLayoutInflater().inflate(R.layout.custom_checkbox, null);
+        mCheckBox.setOnCheckedChangeListener(new OnTipCheckboxChangeListener(mBillAccount));
+        toolbar.addView(mCheckBox);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -75,14 +77,21 @@ public class MainActivity extends AppCompatActivity {
         Type customerType = new TypeToken<List<CustomerItem>>(){}.getType();
         ArrayList<ProductItem> productList = gson.fromJson(mJSONProducts, productType);
         ArrayList<CustomerItem> customerList = gson.fromJson(mJSONCustomers, customerType);
+        if (productList == null)
+            productList = new ArrayList<>();
+        if (customerList == null)
+            customerList = new ArrayList<>();
         productList.add(new ProductItem("produto", new BigDecimal(20), 4, Arrays.asList("Buenos Aires", "Córdoba", "La Plata")));
         customerList.add(new CustomerItem("Miguel", new BigDecimal(30)));
         mBillAccount.setBillAccount(productList, customerList);
         mProductListFragment = ProductListFragment.newInstance(mBillAccount.getProductItemList());
         mCustomerListFragment = CustomerListFragment.newInstance(mBillAccount.getCustomerItemList());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new FabClickLisntener(mBillAccount.getProductItemList(), mProductListFragment));
+       FloatingActionMenu fab = (FloatingActionMenu) findViewById(R.id.fab_menu);
+        fab.setClosedOnTouchOutside(true);
+
+        /*
+        fab.setOnClickListener(new FabClickLisntener(mBillAccount.getProductItemList(), mProductListFragment));*/
     }
 
     private class FabClickLisntener implements View.OnClickListener{
@@ -104,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
         mEditor.putString(KEY_PRODUCT_LIST, mJSONProducts);
         mEditor.putString(KEY_CUSTOMER_LIST, mJSONCustomers);
+        mEditor.putBoolean(KEY_10_PERCENT, mCheckBox.isChecked());
 
         mEditor.apply();
     }
@@ -123,10 +133,13 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_clear) {
-            return true;
+            mEditor.clear();
+            mEditor.apply();
+            mBillAccount.clearLists();
+            mProductListFragment.notifyAdapter();
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

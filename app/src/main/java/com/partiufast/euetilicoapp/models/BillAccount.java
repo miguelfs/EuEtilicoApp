@@ -167,4 +167,8 @@ public class BillAccount {
     }
 
 
+    public void clearLists() {
+        mProductItemList.clear();
+        mCustomerItemList.clear();
+    }
 }
