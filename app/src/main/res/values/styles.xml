@@ -30,4 +30,19 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="MenuButtonsSmall">
+        <item name="fab_size">mini</item>
+        <item name="fab_colorNormal">@color/colorPrimaryDark</item>
+        <item name="fab_colorPressed">@color/colorPrimary</item>
+        <item name="fab_colorRipple">@color/cardBackgroundColor</item>
+    </style>
+
+    <style name="Cerveza" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:colorForeground">@color/foreground_material_light</item>
+        <item name="android:checkMark">?android:attr/listChoiceIndicatorSingle</item>
+    </style>
+
+
+
 </resources>

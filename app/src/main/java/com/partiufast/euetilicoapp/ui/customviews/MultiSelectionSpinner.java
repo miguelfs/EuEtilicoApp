@@ -24,6 +24,8 @@ public class MultiSelectionSpinner extends Spinner implements
 {
     protected String[] _items = null;
     protected boolean[] mSelection = null;
+    private String mTitle = "";
+
 
     ArrayAdapter<String> simple_adapter;
 
@@ -55,10 +57,13 @@ public class MultiSelectionSpinner extends Spinner implements
                     "Argument 'which' is out of bounds.");
         }
     }
-
+    public void setTitle(String title) {
+        mTitle = title;
+    }
     @Override
     public boolean performClick() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(mTitle);
         builder.setMultiChoiceItems(_items, mSelection, this);
 
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

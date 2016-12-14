@@ -2,9 +2,13 @@ package com.partiufast.euetilicoapp.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Miguel on 03/06/2016.
@@ -56,6 +60,20 @@ public class ProductItem implements Parcelable {
         mProductCustomerList = productCustomerList;
     }
 
+    public BigDecimal getParcelPrice(BigDecimal tipValue){
+        return  mProductPrice
+                .multiply(tipValue)
+                .multiply(new BigDecimal(mProductCount))
+                .divide(new BigDecimal(mProductCustomerList.size()), 2, BigDecimal.ROUND_HALF_UP);
+    }
+
+    public String getParcelPriceCurrencyFormat(BigDecimal tipValue){
+        return NumberFormat.getCurrencyInstance().format(mProductPrice
+                .multiply(tipValue)
+                .multiply(new BigDecimal(mProductCount))
+                .divide(new BigDecimal(mProductCustomerList.size()), 2, BigDecimal.ROUND_HALF_UP));
+    }
+
     public boolean checkIfListHasName(String name) {
         for (int i = 0; i < mProductCustomerList.size(); i++)
             if (mProductCustomerList.get(i).equals(name))
@@ -71,6 +89,10 @@ public class ProductItem implements Parcelable {
         }
         return "";
         }
+
+    public String getProductPriceCurrencyFormat() {
+        return  NumberFormat.getCurrencyInstance().format(mProductPrice);
+    }
 
 
     @Override

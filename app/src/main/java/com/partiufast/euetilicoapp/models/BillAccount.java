@@ -137,7 +137,7 @@ public class BillAccount {
     }
 
     public void updateTotalPrice() {
-        mTotalPrice = new BigDecimal(0);
+        mTotalPrice = BigDecimal.ZERO;
         BigDecimal tipValue = new BigDecimal(1.0);
         if (is10PercentOn)
             tipValue = TENPERCENT;

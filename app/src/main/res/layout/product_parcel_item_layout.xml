@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <me.grantland.widget.AutofitTextView
+        android:text="Cerveja Antártica:"
+        android:layout_width="0dp"
+        android:maxLines="1"
+        android:layout_height="wrap_content"
+        android:id="@+id/product_label"
+        android:gravity="left"
+        android:layout_weight="1.28"/>
+
+    <TextView
+        android:text="R$8,00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/product_price_label"
+        android:gravity="center_horizontal"
+        android:layout_weight="0.14"/>
+
+    <TextView
+        android:text="×5Un.\u00F73="
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/math_label"
+        android:gravity="center_horizontal"
+        android:layout_weight="0.14"/>
+
+    <TextView
+        android:text="R$13,33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/result_label"
+        android:gravity="right"
+        android:layout_weight="0.14"/>
+
+
+</LinearLayout>

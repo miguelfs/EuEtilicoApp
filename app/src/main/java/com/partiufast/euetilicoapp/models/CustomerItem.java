@@ -1,12 +1,15 @@
 package com.partiufast.euetilicoapp.models;
 
+import  java.text.NumberFormat;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Miguel on 04/06/2016.
@@ -22,6 +25,12 @@ public class CustomerItem implements Parcelable {
     public CustomerItem(String customerName, BigDecimal price) {
         mCustomerName = customerName;
         mPrice = price;
+    }
+
+    public CustomerItem(String customerName, BigDecimal price, List<ProductItem> productItems) {
+        mCustomerName = customerName;
+        mPrice = price;
+        mProductItemList = productItems;
     }
 
     public CustomerItem(String customerName, BigDecimal price, boolean is10PercentOn) {
@@ -40,6 +49,14 @@ public class CustomerItem implements Parcelable {
 
     public BigDecimal getPrice() {
         return mPrice;
+    }
+
+    public List<ProductItem> getProductItemList() {
+        return mProductItemList;
+    }
+
+    public String getPriceCurrencyFormat() {
+        return  NumberFormat.getCurrencyInstance().format(mPrice);
     }
 
     public void setPrice(BigDecimal price) {
