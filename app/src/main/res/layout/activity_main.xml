@@ -100,8 +100,7 @@
         fab:menu_backgroundColor="#55ffffff"
         fab:menu_colorNormal="@color/colorPrimaryDark"
         fab:menu_colorPressed="@color/colorPrimary"
-        fab:menu_colorRipple="@color/colorAccent"
-        fab:menu_fab_label="Menu label">
+        fab:menu_colorRipple="@color/colorAccent">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/add_product_fab"
