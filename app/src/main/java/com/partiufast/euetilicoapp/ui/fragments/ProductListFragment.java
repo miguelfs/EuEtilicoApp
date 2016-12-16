@@ -44,6 +44,7 @@ public class ProductListFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +84,6 @@ public class ProductListFragment extends Fragment {
         mRecyclerView.addOnItemTouchListener(swipeTouchListener);*/
         return rootView;
     }
-
     public void setCustomerStringList(List<String> customerStringList) {
         mProductItemAdapter.setCustomersList(customerStringList);
     }
@@ -117,13 +117,6 @@ public class ProductListFragment extends Fragment {
                     + " must implement OnHeadlineSelectedListener");
         }*/
 
-
-
-
-
-
-
-
     public void notifyAdapter(){
         if (mProductItemAdapter == null)
             mProductItemAdapter = new ProductItemAdapter(mProductItems, mCustomerItems);
@@ -134,8 +127,6 @@ public class ProductListFragment extends Fragment {
     public void clearAdapter(int count){
         if (mProductItemAdapter == null) {
             mProductItemAdapter = new ProductItemAdapter(mProductItems, mCustomerItems);
-            Log.e("ERROR EU ETILICO: ", "product adapter = null");
-            Toast.makeText(getContext(),"product adapter = null", Toast.LENGTH_SHORT ).show();
         }
         mProductItemAdapter.notifyItemRangeRemoved(0, count);
     }

@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.partiufast.euetilicoapp.R;
+import com.partiufast.euetilicoapp.callbacks.UpdatePricesCallback;
 import com.partiufast.euetilicoapp.models.CustomerItem;
 
 import java.util.List;
@@ -20,9 +21,16 @@ public class CustomerItemAdapter extends RecyclerView.Adapter<CustomerItemAdapte
     private final List<CustomerItem> mCustomerItemList;
     private Resources mResources;
     private Context mContext;
+    private UpdatePricesCallback mPricesCallback;
 
     public CustomerItemAdapter(List<CustomerItem> customerItemList){
         mCustomerItemList = customerItemList;
+    }
+
+    public void swipeRemove(int adapterPosition) {
+        mCustomerItemList.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        mPricesCallback.onUpdateBill();
     }
 
     public class CustomerItemViewHolder extends RecyclerView.ViewHolder {
@@ -51,6 +59,7 @@ public class CustomerItemAdapter extends RecyclerView.Adapter<CustomerItemAdapte
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.customer_item_layout, parent, false);
         mResources = parent.getResources();
         mContext = parent.getContext();
+        mPricesCallback = (UpdatePricesCallback) mContext;
         return new CustomerItemViewHolder(itemView);
     }
 
