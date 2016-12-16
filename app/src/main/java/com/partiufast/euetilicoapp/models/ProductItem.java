@@ -2,13 +2,13 @@ package com.partiufast.euetilicoapp.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
+import android.text.Editable;
+
+import com.google.gson.annotations.Expose;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.Currency;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Miguel on 03/06/2016.
@@ -16,8 +16,12 @@ import java.util.Locale;
 public class ProductItem implements Parcelable {
     private String mProductName;
     private BigDecimal mProductPrice;
+    private String mEditableProductPrice;
     private int mProductCount;
     private List<String> mProductCustomerList;
+
+
+
 
 
     public ProductItem(String productName, BigDecimal productPrice, int productCount, List<String> productCustomerList) {
@@ -60,6 +64,14 @@ public class ProductItem implements Parcelable {
         mProductCustomerList = productCustomerList;
     }
 
+    public void addCustomerToProduct(String customer){
+        mProductCustomerList.add(customer);
+    }
+
+    public BigDecimal getItemTotalPrice(){
+        return mProductPrice.multiply( new BigDecimal(mProductCount));
+    }
+
     public BigDecimal getParcelPrice(BigDecimal tipValue){
         return  mProductPrice
                 .multiply(tipValue)
@@ -89,6 +101,19 @@ public class ProductItem implements Parcelable {
         }
         return "";
         }
+
+    public String getProductelPriceCurrencyFormat(){
+        return NumberFormat.getCurrencyInstance().format(mProductPrice);
+    }
+
+    public String getProductPriceRawValueString(){
+        if(mProductPrice != null ) {
+            if (mProductPrice.equals(new BigDecimal(0)))
+                return "";
+            return (mProductPrice.multiply(new BigDecimal(100))).toString();
+        }
+        return "";
+    }
 
     public String getProductPriceCurrencyFormat() {
         return  NumberFormat.getCurrencyInstance().format(mProductPrice);
@@ -126,4 +151,14 @@ public class ProductItem implements Parcelable {
             return new ProductItem[size];
         }
     };
+
+    public void setEditableProductPrice(Editable editableProductPrice) {
+        mEditableProductPrice = editableProductPrice.toString();
+    }
+
+    public String getEditableProductPrice() {
+        if (mEditableProductPrice == null)
+            return "0";
+        return mEditableProductPrice;
+    }
 }

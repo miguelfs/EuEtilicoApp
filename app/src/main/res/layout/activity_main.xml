@@ -59,24 +59,27 @@
             android:layout_weight="1"
             android:fontFamily="sans-serif"
             android:gravity="end"
-            android:text="Custo do consumo total\n\rem R$"
+            android:text="@string/total_cost_label"
             android:textColor="@android:color/white"
             android:textStyle="italic"/>
 
         <me.grantland.widget.AutofitTextView
             android:id="@+id/totalPriceValueTextView"
             android:layout_width="match_parent"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:fontFamily="sans-serif"
-            android:text="0.00"
+            tools:text="R$1,50"
             android:textColor="@android:color/white"
             android:textSize="54sp"
             android:textStyle="bold"
             android:maxLines="1"
             android:gravity="center_horizontal"
-            />
+            android:layout_marginLeft="4dp"/>
     </LinearLayout>
 
 

@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
@@ -22,7 +20,7 @@ import java.util.List;
 public class MultiSelectionSpinner extends Spinner implements
         DialogInterface.OnMultiChoiceClickListener
 {
-    protected String[] _items = null;
+    protected String[] mItems = null;
     protected boolean[] mSelection = null;
     private String mTitle = "";
 
@@ -64,7 +62,7 @@ public class MultiSelectionSpinner extends Spinner implements
     public boolean performClick() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(mTitle);
-        builder.setMultiChoiceItems(_items, mSelection, this);
+        builder.setMultiChoiceItems(mItems, mSelection, this);
 
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
@@ -86,27 +84,31 @@ public class MultiSelectionSpinner extends Spinner implements
     }
 
     public void setItems(String[] items) {
-        _items = items;
-        mSelection = new boolean[_items.length];
+        mItems = items;
+        mSelection = new boolean[mItems.length];
         simple_adapter.clear();
-        simple_adapter.add(_items[0]);
+        simple_adapter.add(mItems[0]);
         Arrays.fill(mSelection, false);
     }
 
     public void setItems(List<String> items) {
+        if (items.size() == 0) {
+            mItems = null;
+            mSelection = null;
+        }
         if (items.size() > 0) {
-            _items = items.toArray(new String[items.size()]);
-            mSelection = new boolean[_items.length];
+            mItems = items.toArray(new String[items.size()]);
+            mSelection = new boolean[mItems.length];
             simple_adapter.clear();
-            simple_adapter.add(_items[0]);
+            simple_adapter.add(mItems[0]);
             Arrays.fill(mSelection, false);
         }
     }
 
     public void setSelection(String[] selection) {
         for (String cell : selection) {
-            for (int j = 0; j < _items.length; ++j) {
-                if (_items[j].equals(cell)) {
+            for (int j = 0; j < mItems.length; ++j) {
+                if (mItems[j].equals(cell)) {
                     mSelection[j] = true;
                 }
             }
@@ -119,8 +121,8 @@ public class MultiSelectionSpinner extends Spinner implements
                 mSelection[i] = false;
             }
             for (String sel : selection) {
-                for (int j = 0; j < _items.length; ++j) {
-                    if (_items[j].equals(sel)) {
+                for (int j = 0; j < mItems.length; ++j) {
+                    if (mItems[j].equals(sel)) {
                         mSelection[j] = true;
                     }
                 }
@@ -163,9 +165,9 @@ public class MultiSelectionSpinner extends Spinner implements
 
     public List<String> getSelectedStrings() {
         List<String> selection = new LinkedList<String>();
-        for (int i = 0; i < _items.length; ++i) {
+        for (int i = 0; i < mItems.length; ++i) {
             if (mSelection[i]) {
-                selection.add(_items[i]);
+                selection.add(mItems[i]);
             }
         }
         return selection;
@@ -173,7 +175,7 @@ public class MultiSelectionSpinner extends Spinner implements
 
     public List<Integer> getSelectedIndicies() {
         List<Integer> selection = new LinkedList<Integer>();
-        for (int i = 0; i < _items.length; ++i) {
+        for (int i = 0; i < mItems.length; ++i) {
             if (mSelection[i]) {
                 selection.add(i);
             }
@@ -184,20 +186,20 @@ public class MultiSelectionSpinner extends Spinner implements
     private String buildSelectedItemString() {
         StringBuilder sb = new StringBuilder();
         boolean foundOne = false;
-        if (_items != null) {
-            for (int i = 0; i < _items.length; ++i) {
+        if (mItems != null) {
+            for (int i = 0; i < mItems.length; ++i) {
                 if (mSelection[i]) {
                     if (foundOne) {
                         sb.append(", ");
                     }
                     foundOne = true;
 
-                    sb.append(_items[i]);
+                    sb.append(mItems[i]);
                 }
             }
         }
 
-        if (areAllFalse(mSelection) || _items == null ){
+        if (areAllFalse(mSelection) || mItems == null ){
             sb.append("Consumidores");
         }
 
@@ -208,13 +210,13 @@ public class MultiSelectionSpinner extends Spinner implements
         StringBuilder sb = new StringBuilder();
         boolean foundOne = false;
 
-        for (int i = 0; i < _items.length; ++i) {
+        for (int i = 0; i < mItems.length; ++i) {
             if (mSelection[i]) {
                 if (foundOne) {
                     sb.append(", ");
                 }
                 foundOne = true;
-                sb.append(_items[i]);
+                sb.append(mItems[i]);
             }
         }
         return sb.toString();

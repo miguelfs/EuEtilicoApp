@@ -53,7 +53,12 @@ public class ProductPriceListener implements TextWatcher {
     @Override
     public void afterTextChanged(Editable editable) {
         if (mToggle) {
+/*
             mProducts.get(position).setProductPrice(new BigDecimal((double) mCurrencyText.getRawValue() / 100));
+*/
+            mProducts.get(position).setEditableProductPrice(editable);
+            String string = editable.toString();
+            mProducts.get(position).setProductPrice(new BigDecimal((double) Long.parseLong(string.replaceAll("[^0-9/-]", "")) / 100));
             mCallback.onUpdateBill();
         }
         mToggle = !mToggle;

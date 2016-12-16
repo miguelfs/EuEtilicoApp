@@ -2,6 +2,7 @@ package com.partiufast.euetilicoapp.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.partiufast.euetilicoapp.R;
 import com.partiufast.euetilicoapp.models.ProductItem;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import me.grantland.widget.AutofitLayout;
@@ -22,64 +24,63 @@ import me.grantland.widget.AutofitTextView;
  * Created by Miguel on 13/12/2016.
  */
 
-public class ListParcelAdapter extends BaseAdapter {
+public class ListParcelAdapter extends RecyclerView.Adapter<ListParcelAdapter.ParcelViewHolder> {
 
-    private final List<ProductItem> mList;
-    private final Context mContext;
+    private List<ProductItem> mList;
+    private Context mContext;
 
-    ListParcelAdapter(List<ProductItem> list, Context context){
+    ListParcelAdapter(List<ProductItem> list, Context context) {
         mList = list;
         mContext = context;
     }
+
+    ListParcelAdapter(Context context) {
+        mContext = context;
+        mList = new ArrayList<>();
+    }
+
+    public void setList(List<ProductItem> list) {
+        mList.clear();
+        mList.addAll(list);
+    }
+
+    public class ParcelViewHolder extends RecyclerView.ViewHolder {
+        AutofitTextView productLabel;
+        TextView priceLabel, mathLabel, resultLabel;
+
+        public ParcelViewHolder(View itemView, Context context) {
+            super(itemView);
+            productLabel = (AutofitTextView) itemView.findViewById(R.id.product_label);
+            priceLabel = (TextView) itemView.findViewById(R.id.product_price_label);
+            mathLabel = (TextView) itemView.findViewById(R.id.math_label);
+            resultLabel = (TextView) itemView.findViewById(R.id.result_label);
+            Typeface custom_font = Typeface.createFromAsset(context.getAssets(), "fonts/cour.ttf");
+            productLabel.setTypeface(custom_font);
+            priceLabel.setTypeface(custom_font);
+            mathLabel.setTypeface(custom_font);
+            resultLabel.setTypeface(custom_font);
+        }
+    }
+
     @Override
-    public int getCount() {
+    public ParcelViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_parcel_item_layout, parent, false);
+        return new ParcelViewHolder(itemView, mContext);
+    }
+
+    @Override
+    public void onBindViewHolder(ParcelViewHolder viewHolder, int i) {
+        viewHolder.productLabel.setText(mList.get(i).getProductName() + ":");
+        viewHolder.priceLabel.setText(mList.get(i).getProductelPriceCurrencyFormat());
+        viewHolder.mathLabel.setText("×" + mList.get(i).getProductCount() + "Un.÷" + mList.get(i).getProductCustomerList().size() + "=");
+        viewHolder.resultLabel.setText(mList.get(i).getParcelPriceCurrencyFormat(new BigDecimal(1)));
+    }
+
+    @Override
+    public int getItemCount() {
         return mList.size();
     }
 
-    @Override
-    public Object getItem(int i) {
-        return mList.get(i);
-    }
 
-    @Override
-    public long getItemId(int i) {
-        return 0; //não implementado
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        final ViewHolder viewHolder;
-        if (view == null) {
-            view = LayoutInflater.from(mContext).inflate(R.layout.product_parcel_item_layout, null);
-            viewHolder = new ViewHolder();
-            viewHolder.productLabel = (TextView) view.findViewById(R.id.product_label);
-            viewHolder.priceLabel = (TextView) view.findViewById(R.id.product_price_label);
-            viewHolder.mathLabel = (TextView) view.findViewById(R.id.math_label);
-            viewHolder.resultLabel = (TextView) view.findViewById(R.id.result_label);
-            view.setTag(viewHolder);
-        }
-            else {
-                viewHolder = (ViewHolder) view.getTag();
-            }
-        Typeface custom_font = Typeface.createFromAsset(mContext.getAssets(),  "fonts/cour.ttf");
-        viewHolder.productLabel.setTypeface(custom_font);
-        viewHolder.priceLabel.setTypeface(custom_font);
-        viewHolder.mathLabel.setTypeface(custom_font);
-        viewHolder.resultLabel.setTypeface(custom_font);
-
-        /*viewHolder.productLabel.setText(mList.get(i).getProductName());
-        viewHolder.priceLabel.setText(mList.get(i).getProductPriceString());
-        viewHolder.mathLabel.setText("×"+mList.get(i).getProductCount()+"Un.÷"+mList.get(i).getProductCustomerList().size()+"=");
-        viewHolder.productLabel.setText(mList.get(i).getParcelPriceCurrencyFormat(new BigDecimal(1)));*/
-        /*viewHolder.productLabel.setText("Cerveja Antártica" + ":");
-        viewHolder.priceLabel.setText(mList.get(i).getProductPriceCurrencyFormat());
-        viewHolder.mathLabel.setText("×"+mList.get(i).getProductCount()+"Un.÷"+mList.get(i).getProductCustomerList().size()+"=");
-        viewHolder.productLabel.setText("R$13,33");*/
-        return view;
-    }
-
-    private static class ViewHolder {
-        private TextView productLabel, priceLabel, mathLabel, resultLabel;
-    }
 
 }

@@ -5,6 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.google.gson.annotations.Expose;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
@@ -18,6 +20,9 @@ public class CustomerItem implements Parcelable {
     private String mCustomerName;
     private BigDecimal mPrice;
     private List<ProductItem> mProductItemList = new ArrayList<>();
+
+
+
     private static BigDecimal TENPERCENT = new BigDecimal(1.1);
     boolean mIs10PercentOn;
 
@@ -87,7 +92,17 @@ public class CustomerItem implements Parcelable {
                     .multiply(new BigDecimal(mProductItemList.get(index).getProductCount()))
                     .divide(new BigDecimal(mProductItemList.get(index).getProductCustomerList().size()), 2, BigDecimal.ROUND_HALF_UP));
                     //.setScale(2, RoundingMode.CEILING);
-            Log.d("TAG", "oi");
+        }
+    }
+
+    public void updatePrice(BigDecimal tipValue){
+        mPrice = new BigDecimal(0);
+        for (int index = 0; index < mProductItemList.size(); index++) {
+            mPrice = mPrice.add(mProductItemList.get(index).getProductPrice()
+                    .multiply(tipValue)
+                    .multiply(new BigDecimal(mProductItemList.get(index).getProductCount()))
+                    .divide(new BigDecimal(mProductItemList.get(index).getProductCustomerList().size()), 2, BigDecimal.ROUND_HALF_UP));
+            //.setScale(2, RoundingMode.CEILING);
         }
     }
 

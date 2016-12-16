@@ -50,4 +50,7 @@
         <item>40 Unidades</item>
     </string-array>
     <string name="title_activity_test">TestActivity</string>
+    <string name="product_removed">Produto dispensado</string>
+    <string name="undo">DESFAZER</string>
+    <string name="total_cost_label">Custo do consumo total:</string>
 </resources>

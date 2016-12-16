@@ -1,8 +1,10 @@
 package com.partiufast.euetilicoapp.models;
 
 import android.location.Location;
+import android.util.Log;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -15,26 +17,9 @@ public class BillAccount {
     private ArrayList<CustomerItem> mCustomerItemList = new ArrayList<CustomerItem>();
     boolean is10PercentOn;
     private BigDecimal mTotalPrice;
-    private String mPlaceName;
-    private Location mLocation;
-    private GregorianCalendar mGregorianCalendar;
-    private long mStartTime;
-    private long mEndTime;
-    private static BigDecimal TENPERCENT = new BigDecimal(1.1);
+    private final static BigDecimal TENPERCENT = new BigDecimal(1.1);
 
-    public BillAccount(ArrayList<ProductItem> productItemList, ArrayList<CustomerItem> customerItemList,
-                       boolean is10PercentOn, BigDecimal totalPrice, String placeName, Location location,
-                       GregorianCalendar gregorianCalendar, long startTime, long endTime) {
-        mProductItemList = productItemList;
-        mCustomerItemList = customerItemList;
-        this.is10PercentOn = is10PercentOn;
-        mTotalPrice = totalPrice;
-        mPlaceName = placeName;
-        mLocation = location;
-        mGregorianCalendar = gregorianCalendar;
-        mStartTime = startTime;
-        mEndTime = endTime;
-    }
+
 
     public BillAccount() {
         mCustomerItemList = new ArrayList<CustomerItem>();
@@ -86,49 +71,14 @@ public class BillAccount {
         return mTotalPrice;
     }
 
+    public String getTotalPriceCurrencyFormat(){
+        return NumberFormat.getCurrencyInstance().format(mTotalPrice);
+    }
+
     public void setTotalPrice(BigDecimal totalPrice) {
         mTotalPrice = totalPrice;
     }
 
-    public String getPlaceName() {
-        return mPlaceName;
-    }
-
-    public void setPlaceName(String placeName) {
-        mPlaceName = placeName;
-    }
-
-    public Location getLocation() {
-        return mLocation;
-    }
-
-    public void setLocation(Location location) {
-        mLocation = location;
-    }
-
-    public GregorianCalendar getGregorianCalendar() {
-        return mGregorianCalendar;
-    }
-
-    public void setGregorianCalendar(GregorianCalendar gregorianCalendar) {
-        mGregorianCalendar = gregorianCalendar;
-    }
-
-    public long getStartTime() {
-        return mStartTime;
-    }
-
-    public void setStartTime(long startTime) {
-        mStartTime = startTime;
-    }
-
-    public long getEndTime() {
-        return mEndTime;
-    }
-
-    public void setEndTime(long endTime) {
-        mEndTime = endTime;
-    }
 
     public void updateBill() {
         updateTotalPrice();
@@ -136,15 +86,17 @@ public class BillAccount {
         updatePersonListPrices();
     }
 
-    public void updateTotalPrice() {
-        mTotalPrice = BigDecimal.ZERO;
+    private BigDecimal tip(){
         BigDecimal tipValue = new BigDecimal(1.0);
         if (is10PercentOn)
             tipValue = TENPERCENT;
+        return tipValue;
+    }
+
+    public void updateTotalPrice() {
+        mTotalPrice = BigDecimal.ZERO;
         for (int index = 0; index < mProductItemList.size(); index++) {
-            mTotalPrice = mTotalPrice.add(mProductItemList.get(index).getProductPrice()
-                    .multiply(tipValue)
-                    .multiply(new BigDecimal(mProductItemList.get(index).getProductCount())));
+            mTotalPrice = mTotalPrice.add(mProductItemList.get(index).getItemTotalPrice().multiply(tip()));
         }
     }
 
@@ -162,13 +114,21 @@ public class BillAccount {
 
     public void updatePersonListPrices() {
         for (int index = 0; index < mCustomerItemList.size(); index++) {
-            mCustomerItemList.get(index).updatePrice();
+            mCustomerItemList.get(index).updatePrice(tip());
         }
+    }
+
+    public   List<String>  getAllCustomersNames(){
+        List<String> names = new ArrayList<>();
+        for (int i = 0; i < mCustomerItemList.size(); i++)
+            names.add(mCustomerItemList.get(i).getCustomerName());
+        return names;
     }
 
 
     public void clearLists() {
         mProductItemList.clear();
         mCustomerItemList.clear();
+        getAllCustomersNames().clear();
     }
 }

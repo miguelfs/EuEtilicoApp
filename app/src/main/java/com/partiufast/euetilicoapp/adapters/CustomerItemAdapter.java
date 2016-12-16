@@ -2,6 +2,7 @@ package com.partiufast.euetilicoapp.adapters;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,13 +27,20 @@ public class CustomerItemAdapter extends RecyclerView.Adapter<CustomerItemAdapte
 
     public class CustomerItemViewHolder extends RecyclerView.ViewHolder {
         public TextView mCustomerNameTextView, mCustomerPriceTextView;
-        public ListView mListView;
+        public RecyclerView mParcelRecyclerView;
+        public ListParcelAdapter mAdapter = new ListParcelAdapter(mContext);
+
+
 
         public CustomerItemViewHolder(View itemView) {
             super(itemView);
             mCustomerNameTextView = (TextView) itemView.findViewById(R.id.customer_name_text_view);
             mCustomerPriceTextView = (TextView) itemView.findViewById(R.id.customer_price_text_view);
-            mListView = (ListView) itemView.findViewById(android.R.id.list);
+            mParcelRecyclerView = (RecyclerView) itemView.findViewById(R.id.parcel_recycler_view);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
+            mParcelRecyclerView.setLayoutManager(layoutManager);
+            mParcelRecyclerView.setAdapter(mAdapter);
+            mParcelRecyclerView.setNestedScrollingEnabled(false);
         }
     }
 
@@ -50,8 +58,8 @@ public class CustomerItemAdapter extends RecyclerView.Adapter<CustomerItemAdapte
     public void onBindViewHolder(CustomerItemViewHolder holder, int position) {
         holder.mCustomerNameTextView.setText(mCustomerItemList.get(position).getCustomerName());
         holder.mCustomerPriceTextView.setText(mCustomerItemList.get(position).getPriceCurrencyFormat());
-        ListParcelAdapter adapter = new ListParcelAdapter(mCustomerItemList.get(position).getProductItemList(), mContext);
-        holder.mListView.setAdapter(adapter);
+        holder.mAdapter.setList(mCustomerItemList.get(position).getProductItemList());
+        holder.mAdapter.notifyDataSetChanged();
 
     }
 

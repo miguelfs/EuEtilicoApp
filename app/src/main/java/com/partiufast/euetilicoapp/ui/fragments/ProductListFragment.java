@@ -1,21 +1,24 @@
 package com.partiufast.euetilicoapp.ui.fragments;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.partiufast.euetilicoapp.R;
 import com.partiufast.euetilicoapp.adapters.ProductItemAdapter;
-import com.partiufast.euetilicoapp.callbacks.UpdatePricesCallback;
 import com.partiufast.euetilicoapp.models.CustomerItem;
 import com.partiufast.euetilicoapp.models.ProductItem;
 
@@ -59,8 +62,49 @@ public class ProductListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mProductItemAdapter);
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT ) {
 
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                Toast.makeText(getContext(), "on Move", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                //mProductItemAdapter.onProductRemove(viewHolder, mRecyclerView, (CoordinatorLayout) getActivity().findViewById(R.id.main_content));
+                mProductItemAdapter.swipeRemove(viewHolder.getAdapterPosition());
+
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+        /*SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(mRecyclerView, new ProductSwipeListener(mProductItems, mProductItemAdapter));
+        mRecyclerView.addOnItemTouchListener(swipeTouchListener);*/
         return rootView;
+    }
+
+    public void setCustomerStringList(List<String> customerStringList) {
+        mProductItemAdapter.setCustomersList(customerStringList);
+    }
+
+
+    private class SwipeRightCallback extends ItemTouchHelper.SimpleCallback {
+
+
+        public SwipeRightCallback(int dragDirs, int swipeDirs) {
+            super(dragDirs, swipeDirs);
+        }
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+        }
     }
 
     /*@Override
@@ -72,6 +116,13 @@ public class ProductListFragment extends Fragment {
             throw new ClassCastException(activity.toString()
                     + " must implement OnHeadlineSelectedListener");
         }*/
+
+
+
+
+
+
+
 
     public void notifyAdapter(){
         if (mProductItemAdapter == null)

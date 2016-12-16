@@ -1,60 +1,64 @@
 package com.partiufast.euetilicoapp.adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.blackcat.currencyedittext.CurrencyEditText;
 import com.partiufast.euetilicoapp.R;
-import com.partiufast.euetilicoapp.callbacks.CustomerDialogCallback;
+import com.partiufast.euetilicoapp.callbacks.CreateBuilderCallback;
+import com.partiufast.euetilicoapp.callbacks.OkBuilderCallback;
 import com.partiufast.euetilicoapp.callbacks.UpdatePricesCallback;
+import com.partiufast.euetilicoapp.listeners.ProductCountListener;
 import com.partiufast.euetilicoapp.listeners.ProductNameListener;
 import com.partiufast.euetilicoapp.listeners.ProductPriceListener;
 import com.partiufast.euetilicoapp.models.CustomerItem;
 import com.partiufast.euetilicoapp.models.ProductItem;
-import com.partiufast.euetilicoapp.ui.customviews.MultiSelectionSpinner;
+import com.partiufast.euetilicoapp.ui.customviews.CustomCurrencyText;
+import com.partiufast.euetilicoapp.ui.customviews.CustomerSpinner;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.ProductItemViewHolder> {
-    private static List<ProductItem> mProductItemList;
+    private  CreateBuilderCallback mCreateBuilderCallback;
+    private OkBuilderCallback mOkBuilderCallback;
+    private UpdatePricesCallback mUpdatePricesCallback;
 
-    private Resources mResources;
+    private List<ProductItem> mProductItemList;
     private Context mContext;
     private UpdatePricesCallback mPricesCallback;
-    private List<CustomerItem> mCustomersList = new ArrayList<>();
+    private List<CustomerItem> mCustomersList;
 
     public ProductItemAdapter(List<ProductItem> productItemList, List<CustomerItem> customerItemList) {
         mProductItemList = productItemList;
         mCustomersList = customerItemList;
     }
 
-    private List<String> getCustomerNames(){
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < mCustomersList.size(); i++)
-            list.add(mCustomersList.get(i).getCustomerName());
-        return list;
+
+
+
+    public void swipeRemove(int adapterPosition) {
+        mProductItemList.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        mPricesCallback.onUpdateBill();
+    }
+
+    public void setCustomersList(List<String> customersList) {
+       /* mCustomersList.clear();
+        mCustomersList.addAll(customersList);*/
     }
 
     public class ProductItemViewHolder extends RecyclerView.ViewHolder {
         public TextView mProductNameTextView;
-        public CurrencyEditText mProductPriceTextView;
+        public CustomCurrencyText mProductPriceTextView;
         public Spinner mProductCountSpinner;
-        public MultiSelectionSpinner mProductPersonListSpinner;
+        public CustomerSpinner mProductCustomerListSpinner;
+
 
         public ProductNameListener mProductNameListener;
         public ProductPriceListener mProductPriceListener;
@@ -63,20 +67,25 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
         public ProductItemViewHolder(View itemView, ProductNameListener productNameListener, ProductPriceListener productPriceListener, ProductCountListener productCountListener) {
             super(itemView);
             mProductNameTextView = (TextView) itemView.findViewById(R.id.productNameTextView);
-            mProductPriceTextView = (CurrencyEditText) itemView.findViewById(R.id.productPriceTextView);
+            mProductPriceTextView = (CustomCurrencyText) itemView.findViewById(R.id.productPriceTextView);
             mProductCountSpinner = (Spinner) itemView.findViewById(R.id.productCountSpinner);
-            mProductPersonListSpinner = (MultiSelectionSpinner) itemView.findViewById(R.id.productPersonListSpinner);
+            mProductCustomerListSpinner = (CustomerSpinner) itemView.findViewById(R.id.productPersonListSpinner);
 
             mProductNameListener = productNameListener;
-            mProductPriceListener = productPriceListener;
-            mProductCountListener = productCountListener;
-
             mProductNameTextView.addTextChangedListener(mProductNameListener);
+
+            mProductPriceTextView.setDefaultHintEnabled(false);
+            mProductPriceListener = productPriceListener;
             mProductPriceTextView.addTextChangedListener(mProductPriceListener);
+
+
+            mProductCountListener = productCountListener;
             ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, mContext.getResources().getStringArray(R.array.units_array));
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mProductCountSpinner.setAdapter(spinnerArrayAdapter);
             mProductCountSpinner.setOnItemSelectedListener(mProductCountListener);
+
+            mProductCustomerListSpinner.setParameters(mCustomersList, mProductItemList, mCreateBuilderCallback, mOkBuilderCallback, mUpdatePricesCallback);
 
         }
     }
@@ -84,9 +93,11 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
     @Override
     public ProductItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_item_layout, parent, false);
-        mResources = parent.getResources();
         mContext = parent.getContext();
         mPricesCallback = (UpdatePricesCallback) mContext;
+        mCreateBuilderCallback = (CreateBuilderCallback) mContext;
+        mOkBuilderCallback = (OkBuilderCallback) mContext;
+        mUpdatePricesCallback = (UpdatePricesCallback) mContext;
         return new ProductItemViewHolder(itemView, new ProductNameListener(mProductItemList, mPricesCallback), new ProductPriceListener(mProductItemList, mPricesCallback),
                 new ProductCountListener(mProductItemList, mPricesCallback));
     }
@@ -94,15 +105,30 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
     @Override
     public void onBindViewHolder(ProductItemViewHolder holder, int position) {
         holder.mProductNameListener.updatePosition(position);
+        holder.mProductNameTextView.setText(mProductItemList.get(position).getProductName());
+
+
         holder.mProductPriceListener.updatePosition(position);
         holder.mProductPriceListener.updateCurrencyText(holder.mProductPriceTextView);
-        holder.mProductCountListener.updatePosition(position);
+        // if (mProductItemList.size()!=1 && position!=0)
+        holder.mProductPriceTextView.setText(mProductItemList.get(position).getEditableProductPrice());
 
-        holder.mProductNameTextView.setText(mProductItemList.get(position).getProductName());
-        holder.mProductPriceTextView.setText(mProductItemList.get(position).getProductPriceString());
+        holder.mProductCountListener.updatePosition(position);
         holder.mProductCountSpinner.setSelection(mProductItemList.get(position).getProductCount() - 1);
-        holder.mProductPersonListSpinner.setItems(getCustomerNames());
-        holder.mProductPersonListSpinner.setSelection(mProductItemList.get(position).getProductCustomerList());
+        /*holder.mProductCustomerListSpinner.setItems(getCustomerNames());
+        holder.mProductCustomerListSpinner.setSelection(mProductItemList.get(position).getProductCustomerList());*/
+        holder.mProductCustomerListSpinner.updatePosition(position);
+        holder.mProductCustomerListSpinner.setItems(getAllCustomersNames());
+        holder.mProductCustomerListSpinner.setSelection(mProductItemList.get(position).getProductCustomerList());
+
+
+    }
+
+    public   List<String>  getAllCustomersNames(){
+        List<String> names = new ArrayList<>();
+        for (int i = 0; i < mCustomersList.size(); i++)
+            names.add(mCustomersList.get(i).getCustomerName());
+        return names;
     }
 
     @Override
@@ -110,103 +136,5 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
         return mProductItemList.size();
     }
 
-    private class ProductCountListener implements AdapterView.OnItemSelectedListener {
-        private final UpdatePricesCallback mCallback;
-        private final List<ProductItem> mList;
-        private int productPosition;
-
-
-        ProductCountListener(List<ProductItem> list, UpdatePricesCallback callback){
-            mCallback = callback;
-            mList = list;
-
-        }
-
-        public void updatePosition(int position) {
-            productPosition = position;
-        }
-
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int positionSpinner, long id) {
-            mList.get(productPosition).setProductCount(positionSpinner + 1);
-            mCallback.onUpdateBill();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-        }
-    }
-
-    public static class CustomerSpinner extends MultiSelectionSpinner {
-        private final List<String> mCustomersListString;
-        private final List<ProductItem> mProducts;
-        private final CustomerDialogCallback mDialogCallback;
-        private int position;
-        //      String[] _items;
-        //      boolean[] mSelection;
-
-
-        public CustomerSpinner(Context context, List<String> customers, List<ProductItem> products){
-            super(context);
-            mCustomersListString = customers;
-            mDialogCallback = (CustomerDialogCallback) context;
-            mProducts = products;
-        }
-/*
-        public CustomerSpinner(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-*/
-        public void updatePosition(int position) {
-            this.position = position;
-        }
-
-        @Override
-        public boolean performClick() {
-            super.performClick();
-            /*setItems(mCustomersListString);
-            setSelection(mProducts.get(position).getProductCustomerList());
-            mDialogCallback.onClickCustomersSpinner(_items, mSelection, this);*/
-
-/*
-            setItems(mCustomersListString);
-            setSelection(mProducts.get(position).getProductCustomerList());
-            final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.CustomDialog));
-            if (_items == null){
-                final EditText input = new EditText(getContext());
-                TabbedActivity.PersonListFragment.setCustomerBuilder(getContext(),builder, input);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        TabbedActivity.PersonListFragment.setLists(input);
-                        setItems(mCustomersList);
-                        setSelection(mCustomersList);
-                        mProductItemList.get(position).setProductPersonList(getSelectedStrings());
-                        TabbedActivity.updatePrices();
-                    }
-                });
-            } else {
-                builder.setTitle("Selecione os consumidores:")
-                        .setMultiChoiceItems(_items, mSelection, this);
-
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        mProductItemList.get(position).setProductPersonList(getSelectedStrings());
-                        TabbedActivity.updatePrices();
-                    }
-                });
-                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        mProductItemList.get(position).setProductPersonList(getSelectedStrings());
-                        TabbedActivity.updatePrices();
-                    }
-                });
-            }
-            builder.show();*/
-            return true;
-        }
-    }
 
 }
