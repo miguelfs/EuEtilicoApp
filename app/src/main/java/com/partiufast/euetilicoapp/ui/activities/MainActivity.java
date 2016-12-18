@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +28,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
     private CheckBox mCheckBox;
     private AutofitTextView mTotalPriceTextView;
     private String mProductsFragmentTag, mCustomersFragmentTag;
+    private LinearLayout mBottomSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         mCheckBox.setOnCheckedChangeListener(new OnTipCheckboxChangeListener(mBillAccount, this));
         toolbar.addView(mCheckBox);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mBottomSheet = (LinearLayout) findViewById(R.id.bottomSheet);
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -136,6 +141,10 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         addCustomerFab.setOnClickListener(new FabAddCustomerClickListener(mBillAccount.getCustomerItemList(), parentFAB));
         /*
         fab.setOnClickListener(new FabAddProductClickLisntener(mBillAccount.getProductItemList(), mProductListFragment));*/
+    }
+
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
 
     @Override
