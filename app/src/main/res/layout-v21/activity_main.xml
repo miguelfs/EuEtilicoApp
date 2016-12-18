@@ -120,6 +120,4 @@
             style="@style/MenuButtonsSmall"
             fab:fab_label="Adicionar Consumidor" />
     </com.github.clans.fab.FloatingActionMenu>
-
-
 </android.support.design.widget.CoordinatorLayout>
