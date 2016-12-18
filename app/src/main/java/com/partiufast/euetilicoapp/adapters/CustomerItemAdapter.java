@@ -30,6 +30,7 @@ public class CustomerItemAdapter extends RecyclerView.Adapter<CustomerItemAdapte
     public void swipeRemove(int adapterPosition) {
         mCustomerItemList.remove(adapterPosition);
         notifyItemRemoved(adapterPosition);
+        notifyItemRangeChanged(adapterPosition, mCustomerItemList.size());
         mPricesCallback.onUpdateBill();
     }
 

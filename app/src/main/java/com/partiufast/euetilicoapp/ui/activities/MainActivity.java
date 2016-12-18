@@ -157,6 +157,11 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         mPersonItemAdapter.notifyDataSetChanged();*/
     }
 
+    @Override
+    public void onDeleteCustomer() {
+        mCustomerListFragment.notifyAdapter();
+    }
+
     private void addCustomer(EditText input) {
 
     }

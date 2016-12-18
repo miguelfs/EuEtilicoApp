@@ -91,22 +91,19 @@ public class CustomerListFragment extends Fragment{
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mCustomerItemAdapter);
-       /* ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT ) {
-
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                Toast.makeText(getContext(), "on Move", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                //mProductItemAdapter.onProductRemove(viewHolder, mRecyclerView, (CoordinatorLayout) getActivity().findViewById(R.id.main_content));
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 mCustomerItemAdapter.swipeRemove(viewHolder.getAdapterPosition());
 
             }
         };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);*/
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        //itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 }
