@@ -131,4 +131,19 @@ public class BillAccount {
         mCustomerItemList.clear();
         getAllCustomersNames().clear();
     }
+
+    public void onDeleteCustomer(String name) {
+        deletePersonItems(name);
+       // setPersonItems();
+        updatePersonListPrices();
+    }
+
+    public void deletePersonItems(String name) {
+        int position;
+            for (int productIterator = 0; productIterator < mProductItemList.size(); productIterator++) {
+                mProductItemList.get(productIterator).removeCustomerIfMatchName(name);
+        }
+    }
+
+
 }

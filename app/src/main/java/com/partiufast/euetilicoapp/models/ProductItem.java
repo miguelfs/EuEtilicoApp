@@ -93,6 +93,15 @@ public class ProductItem implements Parcelable {
         return false;
     }
 
+    public int removeCustomerIfMatchName(String name) {
+        for (int i = 0; i < mProductCustomerList.size(); i++)
+            if (mProductCustomerList.get(i).equals(name)){
+                mProductCustomerList.remove(i);
+                return i;
+            }
+        return -1;
+    }
+
     public String getProductPriceString(){
         if(mProductPrice != null ) {
             if (mProductPrice.equals(new BigDecimal(0)))
@@ -166,6 +175,10 @@ public class ProductItem implements Parcelable {
         mProductCustomerList.addAll(product.getProductCustomerList());
         mProductPrice = product.getProductPrice();
         mProductName = product.getProductName() + "";
+
+    }
+
+    public void removeName(int position) {
 
     }
 }

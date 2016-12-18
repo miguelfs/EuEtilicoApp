@@ -5,13 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,17 +26,12 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.partiufast.euetilicoapp.R;
-import com.partiufast.euetilicoapp.adapters.SmartFragmentStatePagerAdapter;
 import com.partiufast.euetilicoapp.callbacks.CreateBuilderCallback;
 import com.partiufast.euetilicoapp.callbacks.OkBuilderCallback;
 import com.partiufast.euetilicoapp.callbacks.UpdatePricesCallback;
@@ -53,7 +45,6 @@ import com.partiufast.euetilicoapp.ui.fragments.ProductListFragment;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import me.grantland.widget.AutofitTextView;
@@ -167,8 +158,12 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
     }
 
     @Override
-    public void onDeleteCustomer() {
-        mCustomerListFragment.notifyAdapter();
+    public void onDeleteCustomer(String name) {
+       // mCustomerListFragment.notifyAdapter();
+        mBillAccount.onDeleteCustomer(name);
+        mProductListFragment.notifyAdapter();
+     //   Log.d("DELETE COSTUMER", "");
+
     }
 
     private void addCustomer(EditText input) {

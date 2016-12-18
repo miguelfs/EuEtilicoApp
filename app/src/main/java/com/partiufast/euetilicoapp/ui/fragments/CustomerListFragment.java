@@ -99,11 +99,11 @@ public class CustomerListFragment extends Fragment{
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                mCustomerItemAdapter.swipeRemove(viewHolder.getAdapterPosition());
+                mCustomerItemAdapter.swipeDebugRemove(viewHolder.getAdapterPosition());
 
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        //itemTouchHelper.attachToRecyclerView(mRecyclerView);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 }

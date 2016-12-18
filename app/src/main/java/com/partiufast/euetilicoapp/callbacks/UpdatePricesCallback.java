@@ -6,5 +6,5 @@ package com.partiufast.euetilicoapp.callbacks;
 
 public interface UpdatePricesCallback {
     void onUpdateBill();
-    void onDeleteCustomer();
+    void onDeleteCustomer(String name);
 }

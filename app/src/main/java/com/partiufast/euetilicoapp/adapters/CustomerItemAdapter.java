@@ -34,6 +34,14 @@ public class CustomerItemAdapter extends RecyclerView.Adapter<CustomerItemAdapte
         mPricesCallback.onUpdateBill();
     }
 
+    public void swipeDebugRemove(int adapterPosition) {
+        String name = mCustomerItemList.get(adapterPosition).getCustomerName();
+        mCustomerItemList.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        notifyItemRangeChanged(adapterPosition, mCustomerItemList.size());
+        mPricesCallback.onDeleteCustomer(name);
+    }
+
     public class CustomerItemViewHolder extends RecyclerView.ViewHolder {
         public TextView mCustomerNameTextView, mCustomerPriceTextView;
         public RecyclerView mParcelRecyclerView;
