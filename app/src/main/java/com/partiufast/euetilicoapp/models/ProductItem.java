@@ -161,4 +161,11 @@ public class ProductItem implements Parcelable {
             return "0";
         return mEditableProductPrice;
     }
+    public void copyOf(ProductItem product){
+        mProductCustomerList.clear();
+        mProductCustomerList.addAll(product.getProductCustomerList());
+        mProductPrice = product.getProductPrice();
+        mProductName = product.getProductName() + "";
+
+    }
 }

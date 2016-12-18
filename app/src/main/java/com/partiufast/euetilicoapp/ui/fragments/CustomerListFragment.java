@@ -19,6 +19,7 @@ import com.partiufast.euetilicoapp.models.CustomerItem;
 import com.partiufast.euetilicoapp.models.ProductItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerListFragment extends Fragment{
 
@@ -50,6 +51,42 @@ public class CustomerListFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        setParameters(mCustomerItems);
+
+        return rootView;
+    }
+
+    public void notifyAdapter(){
+        if (mCustomerItemAdapter == null){
+            Log.e("ERROR EU ETILICO: ", "customer adapter = null");
+            Toast.makeText(getContext(),"customer adapter = null", Toast.LENGTH_SHORT ).show();
+        }
+          //  mCustomerItemAdapter = new CustomerItemAdapter(mCustomerItems);
+
+        mCustomerItemAdapter.notifyDataSetChanged();
+
+    }
+
+    public void clearAdapter(int count){
+        if (mCustomerItemAdapter == null) {
+            /*mCustomerItemAdapter = new CustomerItemAdapter(mCustomerItems);*/
+            Log.e("ERROR EU ETILICO: ", "customer adapter = null");
+            Toast.makeText(getContext(),"customer adapter = null", Toast.LENGTH_SHORT ).show();
+        }
+        mCustomerItemAdapter.notifyItemRangeRemoved(0, count);
+    }
+
+    public List<CustomerItem> getCustomerItemList() {
+        return mCustomerItems;
+    }
+
+    public void setCustomerItems(ArrayList<CustomerItem> customerItems) {
+        mCustomerItems = customerItems;
+    }
+
+    public void setParameters(ArrayList<CustomerItem> customerItems) {
+        if (mCustomerItems != customerItems)
+            mCustomerItems = customerItems;
         mCustomerItemAdapter = new CustomerItemAdapter(mCustomerItems);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -71,22 +108,5 @@ public class CustomerListFragment extends Fragment{
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerView);*/
-        return rootView;
-    }
-
-    public void notifyAdapter(){
-        if (mCustomerItemAdapter == null)
-            mCustomerItemAdapter = new CustomerItemAdapter(mCustomerItems);
-        mCustomerItemAdapter.notifyDataSetChanged();
-
-    }
-
-    public void clearAdapter(int count){
-        if (mCustomerItemAdapter == null) {
-            mCustomerItemAdapter = new CustomerItemAdapter(mCustomerItems);
-            Log.e("ERROR EU ETILICO: ", "customer adapter = null");
-            Toast.makeText(getContext(),"customer adapter = null", Toast.LENGTH_SHORT ).show();
-        }
-        mCustomerItemAdapter.notifyItemRangeRemoved(0, count);
     }
 }

@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +22,7 @@ import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -34,6 +36,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.partiufast.euetilicoapp.R;
+import com.partiufast.euetilicoapp.adapters.SmartFragmentStatePagerAdapter;
 import com.partiufast.euetilicoapp.callbacks.CreateBuilderCallback;
 import com.partiufast.euetilicoapp.callbacks.OkBuilderCallback;
 import com.partiufast.euetilicoapp.callbacks.UpdatePricesCallback;
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
     private static final String KEY_PRODUCT_LIST = "KEY_PRODUCT_LIST";
     private static final String KEY_CUSTOMER_LIST = "KEY_CUSTOMER_LIST";
     private static final String KEY_10_PERCENT = "KEY_10_PERCENT";
+    private static final String KEY_PRODUCTS_FRAG_TAG = "KEY_PRODUCTS_FRAG_TAG";
     private BillAccount mBillAccount = new BillAccount();
     private ProductListFragment mProductListFragment;
     private CustomerListFragment mCustomerListFragment;
@@ -68,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
     private String mJSONProducts, mJSONCustomers;
     private CheckBox mCheckBox;
     private AutofitTextView mTotalPriceTextView;
+    private String mProductsFragmentTag, mCustomersFragmentTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,14 +94,16 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
 
         mSharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
         mEditor = mSharedPreferences.edit();
-        Gson gson = new Gson();
         mJSONProducts = mSharedPreferences.getString(KEY_PRODUCT_LIST, "");
         mJSONCustomers = mSharedPreferences.getString(KEY_CUSTOMER_LIST, "");
+        mProductsFragmentTag = mSharedPreferences.getString(KEY_PRODUCTS_FRAG_TAG, "");
+
         mBillAccount.setIs10PercentOn(mSharedPreferences.getBoolean(KEY_10_PERCENT, false));
         Type productType = new TypeToken<List<ProductItem>>() {
         }.getType();
         Type customerType = new TypeToken<List<CustomerItem>>() {
         }.getType();
+        Gson gson = new Gson();
         ArrayList<ProductItem> productList = gson.fromJson(mJSONProducts, productType);
         ArrayList<CustomerItem> customerList = gson.fromJson(mJSONCustomers, customerType);
         if (productList == null)
@@ -104,22 +111,37 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         if (customerList == null)
             customerList = new ArrayList<>();
         mBillAccount.setBillAccount(productList, customerList);
-        mProductListFragment = ProductListFragment.newInstance(mBillAccount.getProductItemList(), mBillAccount.getCustomerItemList());
-        mCustomerListFragment = CustomerListFragment.newInstance(mBillAccount.getCustomerItemList());
+        if (savedInstanceState != null) {
+            Log.d("OLAR", " OLAR");
+        }
+
+       /* if (savedInstanceState != null) {
+            mProductListFragment = (ProductListFragment) getSupportFragmentManager().findFragmentByTag(mProductsFragmentTag);
+        }*/
+
+        /*mProductListFragment = ProductListFragment.newInstance(mBillAccount.getProductItemList(), mBillAccount.getCustomerItemList());
+        mCustomerListFragment = CustomerListFragment.newInstance(mBillAccount.getCustomerItemList());*/
+
         //must set view after adapters are set
         mCheckBox.setChecked(mSharedPreferences.getBoolean(KEY_10_PERCENT, false));
+
+
 
 
         FloatingActionMenu parentFAB = (FloatingActionMenu) findViewById(R.id.fab_menu);
         parentFAB.setClosedOnTouchOutside(true);
         FloatingActionButton addProductFab = (FloatingActionButton) findViewById(R.id.add_product_fab);
-        addProductFab.setOnClickListener(new FabAddProductClickLisntener(mBillAccount.getProductItemList(), mProductListFragment, parentFAB));
+        addProductFab.setOnClickListener(new FabAddProductClickLisntener(mBillAccount.getProductItemList(), parentFAB));
         FloatingActionButton addCustomerFab = (FloatingActionButton) findViewById(R.id.add_customer_fab);
-        addCustomerFab.setOnClickListener(new FabAddCustomerClickListener(mBillAccount.getCustomerItemList(), mCustomerListFragment, parentFAB));
+        addCustomerFab.setOnClickListener(new FabAddCustomerClickListener(mBillAccount.getCustomerItemList(), parentFAB));
         /*
         fab.setOnClickListener(new FabAddProductClickLisntener(mBillAccount.getProductItemList(), mProductListFragment));*/
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     @Override
     public void onUpdateBill() {
@@ -167,18 +189,16 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
     private class FabAddProductClickLisntener implements View.OnClickListener {
         FloatingActionMenu mFam;
         ArrayList<ProductItem> mList;
-        ProductListFragment mFrag;
 
-        FabAddProductClickLisntener(ArrayList<ProductItem> list, ProductListFragment frag, FloatingActionMenu fam) {
+        FabAddProductClickLisntener(ArrayList<ProductItem> list,  FloatingActionMenu fam) {
             mList = list;
-            mFrag = frag;
             mFam = fam;
         }
 
         @Override
         public void onClick(View view) {
             mList.add(new ProductItem("", new BigDecimal(0), 1, new ArrayList<String>()));
-            mFrag.notifyAdapter();
+            mProductListFragment.notifyAdapter();
             mFam.close(false);
         }
     }
@@ -186,11 +206,9 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
     private class FabAddCustomerClickListener implements View.OnClickListener {
         FloatingActionMenu mFam;
         ArrayList<CustomerItem> mList;
-        CustomerListFragment mFrag;
 
-        FabAddCustomerClickListener(ArrayList<CustomerItem> list, CustomerListFragment frag, FloatingActionMenu fam) {
+        FabAddCustomerClickListener(ArrayList<CustomerItem> list, FloatingActionMenu fam) {
             mList = list;
-            mFrag = frag;
             mFam = fam;
         }
 
@@ -198,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         public void onClick(View view) {
             mFam.close(false);
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.CustomDialog));
-            setAndDisplayCustomerAddBuilder(MainActivity.this, builder, mList, mFrag);
+            setAndDisplayCustomerAddBuilder(MainActivity.this, builder, mList, mCustomerListFragment);
             AlertDialog dialog = builder.create();
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
             dialog.show();
@@ -238,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         mEditor.putString(KEY_PRODUCT_LIST, mJSONProducts);
         mEditor.putString(KEY_CUSTOMER_LIST, mJSONCustomers);
         mEditor.putBoolean(KEY_10_PERCENT, mCheckBox.isChecked());
+        mEditor.putString(KEY_PRODUCTS_FRAG_TAG, mProductsFragmentTag);
 
         mEditor.apply();
         super.onPause();
@@ -281,10 +300,28 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         @Override
         public Fragment getItem(int position) {
             if (position == 0)
-                return mProductListFragment;
+               return ProductListFragment.newInstance(mBillAccount.getProductItemList(), mBillAccount.getCustomerItemList());
             if (position == 1)
-                return mCustomerListFragment;
+              return CustomerListFragment.newInstance(mBillAccount.getCustomerItemList());
             return null;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
+            if (position == 0) {
+                mProductListFragment = (ProductListFragment) createdFragment;
+                if (mProductListFragment.getProductItemList() != null){
+                    mProductListFragment.setParameters(mBillAccount.getProductItemList(), mBillAccount.getCustomerItemList());
+                }
+            }
+            if (position == 1) {
+                mCustomerListFragment = (CustomerListFragment) createdFragment;
+                if (mCustomerListFragment.getCustomerItemList() != null) {
+                    mCustomerListFragment.setParameters(mBillAccount.getCustomerItemList());
+                }
+            }
+            return createdFragment;
         }
 
         @Override
@@ -302,5 +339,7 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
             }
             return null;
         }
+
+
     }
 }

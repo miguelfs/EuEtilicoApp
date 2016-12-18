@@ -45,6 +45,8 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
     public void swipeRemove(int adapterPosition) {
         mProductItemList.remove(adapterPosition);
         notifyItemRemoved(adapterPosition);
+        notifyItemRangeChanged(adapterPosition, mProductItemList.size());
+
         mPricesCallback.onUpdateBill();
     }
 
@@ -53,7 +55,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
         mCustomersList.addAll(customersList);*/
     }
 
-    public class ProductItemViewHolder extends RecyclerView.ViewHolder {
+    public class ProductItemViewHolder extends RecyclerView.ViewHolder{
         public TextView mProductNameTextView;
         public CustomCurrencyText mProductPriceTextView;
         public Spinner mProductCountSpinner;
@@ -64,7 +66,9 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
         public ProductPriceListener mProductPriceListener;
         public ProductCountListener mProductCountListener;
 
-        public ProductItemViewHolder(View itemView, ProductNameListener productNameListener, ProductPriceListener productPriceListener, ProductCountListener productCountListener) {
+
+        public ProductItemViewHolder(View itemView, ProductNameListener productNameListener, ProductPriceListener productPriceListener,
+                                     ProductCountListener productCountListener) {
             super(itemView);
             mProductNameTextView = (TextView) itemView.findViewById(R.id.productNameTextView);
             mProductPriceTextView = (CustomCurrencyText) itemView.findViewById(R.id.productPriceTextView);
@@ -88,6 +92,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
             mProductCustomerListSpinner.setParameters(mCustomersList, mProductItemList, mCreateBuilderCallback, mOkBuilderCallback, mUpdatePricesCallback);
 
         }
+
     }
 
     @Override
@@ -101,6 +106,8 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
         return new ProductItemViewHolder(itemView, new ProductNameListener(mProductItemList, mPricesCallback), new ProductPriceListener(mProductItemList, mPricesCallback),
                 new ProductCountListener(mProductItemList, mPricesCallback));
     }
+
+
 
     @Override
     public void onBindViewHolder(ProductItemViewHolder holder, int position) {
@@ -120,9 +127,9 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
         holder.mProductCustomerListSpinner.updatePosition(position);
         holder.mProductCustomerListSpinner.setItems(getAllCustomersNames());
         holder.mProductCustomerListSpinner.setSelection(mProductItemList.get(position).getProductCustomerList());
-
-
     }
+
+
 
     public   List<String>  getAllCustomersNames(){
         List<String> names = new ArrayList<>();
