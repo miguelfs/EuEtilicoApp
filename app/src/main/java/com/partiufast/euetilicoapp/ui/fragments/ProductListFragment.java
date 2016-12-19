@@ -14,7 +14,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.partiufast.euetilicoapp.R;
@@ -125,6 +128,19 @@ public class ProductListFragment extends Fragment {
         return mProductItems;
     }
 
+    public boolean jumpToLastWhenCallButton() {
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.smoothScrollToPosition(mProductItems.size() - 1);
+       //         mProductItemAdapter.setFocus();
+               /* mRecyclerView.findViewHolderForAdapterPosition(mProductItems.size() - 1).itemView.findViewById(R.id.productNameTextView).requestFocus();
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput( mRecyclerView.findViewHolderForAdapterPosition(mProductItems.size() - 1).itemView.findViewById(R.id.productNameTextView), InputMethodManager.SHOW_IMPLICIT);
+            */}
+        });
+        return false;
+    }
 
     private class SwipeRightCallback extends ItemTouchHelper.SimpleCallback {
 

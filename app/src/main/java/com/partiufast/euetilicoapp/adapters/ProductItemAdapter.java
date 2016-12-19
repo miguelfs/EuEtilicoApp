@@ -55,6 +55,11 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
         mCustomersList.addAll(customersList);*/
     }
 
+    public void setFocus() {
+
+    }
+
+
     public class ProductItemViewHolder extends RecyclerView.ViewHolder{
         public TextView mProductNameTextView;
         public CustomCurrencyText mProductPriceTextView;
@@ -91,6 +96,10 @@ public class ProductItemAdapter extends RecyclerView.Adapter<ProductItemAdapter.
 
             mProductCustomerListSpinner.setParameters(mCustomersList, mProductItemList, mCreateBuilderCallback, mOkBuilderCallback, mUpdatePricesCallback);
 
+        }
+
+      public void setFocusProductNameEditText(){
+          mProductNameTextView.requestFocus();
         }
 
     }

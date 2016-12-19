@@ -102,7 +102,6 @@ public class CustomerItem implements Parcelable {
                     .multiply(tipValue)
                     .multiply(new BigDecimal(mProductItemList.get(index).getProductCount()))
                     .divide(new BigDecimal(mProductItemList.get(index).getProductCustomerList().size()), 2, BigDecimal.ROUND_HALF_UP));
-            //.setScale(2, RoundingMode.CEILING);
         }
     }
 

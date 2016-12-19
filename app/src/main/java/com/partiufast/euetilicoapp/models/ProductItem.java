@@ -86,6 +86,8 @@ public class ProductItem implements Parcelable {
                 .divide(new BigDecimal(mProductCustomerList.size()), 2, BigDecimal.ROUND_HALF_UP));
     }
 
+
+
     public boolean checkIfListHasName(String name) {
         for (int i = 0; i < mProductCustomerList.size(); i++)
             if (mProductCustomerList.get(i).equals(name))
@@ -181,4 +183,6 @@ public class ProductItem implements Parcelable {
     public void removeName(int position) {
 
     }
+
+
 }

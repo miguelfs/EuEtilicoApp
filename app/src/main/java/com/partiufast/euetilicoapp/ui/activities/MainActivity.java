@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         FloatingActionMenu parentFAB = (FloatingActionMenu) findViewById(R.id.fab_menu);
         parentFAB.setClosedOnTouchOutside(true);
         FloatingActionButton addProductFab = (FloatingActionButton) findViewById(R.id.add_product_fab);
-        addProductFab.setOnClickListener(new FabAddProductClickLisntener(mBillAccount.getProductItemList(), parentFAB));
+        addProductFab.setOnClickListener(new FabAddProductClickLisntener(mBillAccount.getProductItemList(), parentFAB, mViewPager));
         FloatingActionButton addCustomerFab = (FloatingActionButton) findViewById(R.id.add_customer_fab);
         addCustomerFab.setOnClickListener(new FabAddCustomerClickListener(mBillAccount.getCustomerItemList(), parentFAB));
         /*
@@ -149,7 +149,8 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         mBillAccount.updateBill();
         //mTotalPriceTextView.setText(mBillAccount.getTotalPrice().setScale(2, RoundingMode.HALF_UP).toString());
         mTotalPriceTextView.setText(mBillAccount.getTotalPriceCurrencyFormat());
-        mCustomerListFragment.notifyAdapter();
+        if (mCustomerListFragment!=null)
+            mCustomerListFragment.notifyAdapter();
 
         /*
         mTotalPriceTextView.setText(mBillAccount.getTotalPrice().setScale(2, RoundingMode.HALF_UP).toString());
@@ -196,12 +197,14 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
     }
 
     private class FabAddProductClickLisntener implements View.OnClickListener {
+        private final ViewPager mVPager;
         FloatingActionMenu mFam;
         ArrayList<ProductItem> mList;
 
-        FabAddProductClickLisntener(ArrayList<ProductItem> list,  FloatingActionMenu fam) {
+        FabAddProductClickLisntener(ArrayList<ProductItem> list, FloatingActionMenu fam, ViewPager viewPager) {
             mList = list;
             mFam = fam;
+            mVPager = viewPager;
         }
 
         @Override
@@ -209,6 +212,14 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
             mList.add(new ProductItem("", new BigDecimal(0), 1, new ArrayList<String>()));
             mProductListFragment.notifyAdapter();
             mFam.close(false);
+            try {
+                if (mVPager.getCurrentItem() != 0) {
+                    mVPager.setCurrentItem(0, true);
+                }
+            } catch (Exception e){
+                Log.e("ERROR: ", e.getLocalizedMessage());
+            }
+            mProductListFragment.jumpToLastWhenCallButton();
         }
     }
 

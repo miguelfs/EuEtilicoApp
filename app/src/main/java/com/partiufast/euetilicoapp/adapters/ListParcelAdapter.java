@@ -73,7 +73,7 @@ public class ListParcelAdapter extends RecyclerView.Adapter<ListParcelAdapter.Pa
         viewHolder.productLabel.setText(mList.get(i).getProductName() + ":");
         viewHolder.priceLabel.setText(mList.get(i).getProductelPriceCurrencyFormat());
         viewHolder.mathLabel.setText("×" + mList.get(i).getProductCount() + "Un.÷" + mList.get(i).getProductCustomerList().size() + "=");
-        viewHolder.resultLabel.setText(mList.get(i).getParcelPriceCurrencyFormat(new BigDecimal(1)));
+        viewHolder.resultLabel.setText(mList.get(i).getParcelPriceCurrencyFormat( new BigDecimal(1)));
     }
 
     @Override
