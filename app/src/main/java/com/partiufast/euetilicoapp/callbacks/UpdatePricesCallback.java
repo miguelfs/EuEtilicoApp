@@ -8,3 +8,5 @@ public interface UpdatePricesCallback {
     void onUpdateBill();
     void onDeleteCustomer(String name);
 }
+
+// "mainActivity".onUpdateBill();

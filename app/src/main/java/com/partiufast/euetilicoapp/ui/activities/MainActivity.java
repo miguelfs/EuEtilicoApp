@@ -26,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -48,13 +49,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.grantland.widget.AutofitTextView;
-
 public class MainActivity extends AppCompatActivity implements UpdatePricesCallback, CreateBuilderCallback, OkBuilderCallback {
     private static final String PREFS_FILE = "com.partiufast.euetilicoapp.preferences";
     private static final String KEY_PRODUCT_LIST = "KEY_PRODUCT_LIST";
     private static final String KEY_CUSTOMER_LIST = "KEY_CUSTOMER_LIST";
-    private static final String KEY_10_PERCENT = "KEY_10_PERCENT";
+    private static final String KEY_IS_TIP_ON = "KEY_IS_TIP_ON";
     private static final String KEY_PRODUCTS_FRAG_TAG = "KEY_PRODUCTS_FRAG_TAG";
+    private static final String KEY_TIP_VALUE = "KEY_TIP_VALUE";
+    private static final String KEY_BILL_CODE = "KEY_BILL_CODE";
     private BillAccount mBillAccount = new BillAccount();
     private ProductListFragment mProductListFragment;
     private CustomerListFragment mCustomerListFragment;
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
     private AutofitTextView mTotalPriceTextView;
     private String mProductsFragmentTag, mCustomersFragmentTag;
     private LinearLayout mBottomSheet;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +96,10 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         mJSONProducts = mSharedPreferences.getString(KEY_PRODUCT_LIST, "");
         mJSONCustomers = mSharedPreferences.getString(KEY_CUSTOMER_LIST, "");
         mProductsFragmentTag = mSharedPreferences.getString(KEY_PRODUCTS_FRAG_TAG, "");
-
-        mBillAccount.setIs10PercentOn(mSharedPreferences.getBoolean(KEY_10_PERCENT, false));
+        mBillAccount.setTipValue(mSharedPreferences.getInt(KEY_TIP_VALUE, 10));
+        mCheckBox.setText(mBillAccount.getTipValueAsInt()+"%");
+        mBillAccount.setIsTipOn(mSharedPreferences.getBoolean(KEY_IS_TIP_ON, false));
+        mBillAccount.setBillCode(mSharedPreferences.getString(KEY_BILL_CODE, ""));
         Type productType = new TypeToken<List<ProductItem>>() {
         }.getType();
         Type customerType = new TypeToken<List<CustomerItem>>() {
@@ -110,16 +115,8 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         if (savedInstanceState != null) {
             Log.d("OLAR", " OLAR");
         }
-
-       /* if (savedInstanceState != null) {
-            mProductListFragment = (ProductListFragment) getSupportFragmentManager().findFragmentByTag(mProductsFragmentTag);
-        }*/
-
-        /*mProductListFragment = ProductListFragment.newInstance(mBillAccount.getProductItemList(), mBillAccount.getCustomerItemList());
-        mCustomerListFragment = CustomerListFragment.newInstance(mBillAccount.getCustomerItemList());*/
-
         //must set view after adapters are set
-        mCheckBox.setChecked(mSharedPreferences.getBoolean(KEY_10_PERCENT, false));
+        mCheckBox.setChecked(mSharedPreferences.getBoolean(KEY_IS_TIP_ON, false));
 
 
 
@@ -130,14 +127,31 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         addProductFab.setOnClickListener(new FabAddProductClickLisntener(mBillAccount.getProductItemList(), parentFAB, mViewPager));
         FloatingActionButton addCustomerFab = (FloatingActionButton) findViewById(R.id.add_customer_fab);
         addCustomerFab.setOnClickListener(new FabAddCustomerClickListener(mBillAccount.getCustomerItemList(), parentFAB));
-        /*
-        fab.setOnClickListener(new FabAddProductClickLisntener(mBillAccount.getProductItemList(), mProductListFragment));*/
+        /*getBillReference().child("active_users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mBillAccount.setActiveUsers( Integer.parseInt(dataSnapshot.getValue().toString()));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
     }
 
-    private int dp2px(int dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
+  /*  private DatabaseReference getBillReference(){
+        return mDatabase.getReference().child("bills").child(mBillAccount.getBillCode());
     }
 
+    private DatabaseReference getBillActiveUsersReference(){
+        return mDatabase.getReference().child("bills").child(mBillAccount.getBillCode()).child("active_users");
+    }*/
+
+ /*   private void addBillToFirebaseDB() {
+        getBillActiveUsersReference().setValue(1);
+    }
+*/
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -147,35 +161,27 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
     public void onUpdateBill() {
         Log.d("UPDATE BILL:", " yay!");
         mBillAccount.updateBill();
-        //mTotalPriceTextView.setText(mBillAccount.getTotalPrice().setScale(2, RoundingMode.HALF_UP).toString());
         mTotalPriceTextView.setText(mBillAccount.getTotalPriceCurrencyFormat());
         if (mCustomerListFragment!=null)
             mCustomerListFragment.notifyAdapter();
-
-        /*
-        mTotalPriceTextView.setText(mBillAccount.getTotalPrice().setScale(2, RoundingMode.HALF_UP).toString());
-        FormatStringAndText.setPriceTextViewSize(mBillAccount.getTotalPrice(), mTotalPriceTextView, mViewPager, mViewPager.getContext());
-        mPersonItemAdapter.notifyDataSetChanged();*/
     }
 
     @Override
     public void onDeleteCustomer(String name) {
-       // mCustomerListFragment.notifyAdapter();
         mBillAccount.onDeleteCustomer(name);
         mProductListFragment.notifyAdapter();
-     //   Log.d("DELETE COSTUMER", "");
-
     }
 
-    private void addCustomer(EditText input) {
-
-    }
 
     @Override
     public void onCreateBuilder(Context context, AlertDialog.Builder builder, EditText input) {
         setCustomerBuilder( context,  builder, input);
     }
 
+    @Override
+    public void onClickProductCard(int position) {
+
+    }
 
 
     @Override
@@ -185,12 +191,10 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
 
     private boolean setLists(EditText input, int pos){
 
-        //mBillAccount.getCustomerItemList().contains(input.toString())
         if(!input.getText().toString().equals("")  && !mBillAccount.getAllCustomersNames().contains(input.toString())) {
             mBillAccount.getCustomerItemList().add(new CustomerItem(input.getText().toString(), new BigDecimal(0)));
             mBillAccount.getProductItemList().get(pos).addCustomerToProduct(input.toString());
             mCustomerListFragment.notifyAdapter();
-          //  mProductListFragment.setCustomerStringList(mBillAccount.getAllCustomersNames());
             return true;
         }
         return false;
@@ -246,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
     public static void setAndDisplayCustomerAddBuilder(Context context, AlertDialog.Builder builder, final ArrayList<CustomerItem> list, final CustomerListFragment frag) {
         final EditText input = new EditText(context);
         setCustomerBuilder(context,builder, input);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(!input.getText().toString().equals("")) {
@@ -259,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
 
     public static void setCustomerBuilder(Context context, AlertDialog.Builder builder, EditText input){
         builder.setTitle("Defina o nome do novo consumidor:");
+        builder.setNegativeButton(R.string.cancel, null);
         input.setTextColor(ContextCompat.getColor(context, R.color.white));
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
@@ -266,8 +271,6 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
 
     @Override
     protected void onPause() {
-        /*final GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();*/
         Gson gson = new Gson();
 
         mJSONProducts = gson.toJson(mBillAccount.getProductItemList());
@@ -275,7 +278,9 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
 
         mEditor.putString(KEY_PRODUCT_LIST, mJSONProducts);
         mEditor.putString(KEY_CUSTOMER_LIST, mJSONCustomers);
-        mEditor.putBoolean(KEY_10_PERCENT, mCheckBox.isChecked());
+        mEditor.putInt(KEY_TIP_VALUE, mBillAccount.getTipValueAsInt());
+        mEditor.putBoolean(KEY_IS_TIP_ON, mCheckBox.isChecked());
+        mEditor.putString(KEY_BILL_CODE, mBillAccount.getBillCode());
         mEditor.putString(KEY_PRODUCTS_FRAG_TAG, mProductsFragmentTag);
 
         mEditor.apply();
@@ -302,11 +307,77 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
             int productCount = mBillAccount.getProductItemList().size();
             int customerCount = mBillAccount.getCustomerItemList().size();
             mBillAccount.clearLists();
+            if (mBillAccount.getActiveUsers() == 1)
+      ///          getBillReference().removeValue();
+            mBillAccount.generateBillCode();
+            mBillAccount.setActiveUsers(1);
+     //       addBillToFirebaseDB();
+
             mTotalPriceTextView.setText("");
             mProductListFragment.clearAdapter(productCount);
             mCustomerListFragment.clearAdapter(customerCount);
             mBillAccount.updateBill();
         }
+        if (id == R.id.action_tip){
+            final NumberPicker picker = new NumberPicker(this);
+            picker.setMaxValue(25);
+            picker.setMinValue(1);
+            String [] values = new String[25];
+            for (int i = 0; i < 25; i++)
+                values[i] = (i+1) + "%";
+            picker.setDisplayedValues( values );
+            picker.setWrapSelectorWheel(true);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.CustomDialog));
+           builder.setTitle("Defina o valor da taxa de conveniência:");
+            picker.setValue(mBillAccount.getTipValueAsInt());
+            builder.setView(picker);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mBillAccount.setTipValue(picker.getValue());
+                    onUpdateBill();
+                    mCheckBox.setText(picker.getValue()+"%");
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+    /*    if (id == R.id.action_share){
+            final EditText editText = new EditText(this);
+
+            editText.setText(mBillAccount.getBillCode());
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.CustomDialog));
+            builder.setTitle("Compartilhar Comanda");
+            builder.setMessage("Insira o código fornecido por seus amigos, ou compartilhe com eles o código abaixo:");
+            builder.setView(editText);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                     if (!editText.getText().toString().equals(mBillAccount.getBillCode())){
+                         mDatabase.getReference().child("bills").addListenerForSingleValueEvent(new ValueEventListener() {
+                             @Override
+                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                 mBillAccount.setBillCode(editText.getText().toString());
+                                if (dataSnapshot.hasChild(editText.getText().toString())){
+                                    int active_users = Integer.parseInt(dataSnapshot.child(editText.getText().toString()).child("active_users").getValue().toString()) + 1;
+                                 mDatabase.getReference().child("bills").child(editText.getText().toString()).child("active_users")
+                                         .setValue(active_users);
+                                }
+                             }
+
+                             @Override
+                             public void onCancelled(DatabaseError databaseError) {
+
+                             }
+                         });
+                    }
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }*/
 
         return true;
     }
@@ -359,7 +430,5 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
             }
             return null;
         }
-
-
     }
 }

@@ -78,7 +78,8 @@ public class CustomerSpinner extends MultiSelectionSpinner {
         if (mItems == null) {
             final EditText input = new EditText(getContext());
             mCreateBuilderCallback.onCreateBuilder(getContext(), builder, input);
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(R.string.cancel, null);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                    if (mOkBuilderCallback.onOkSelectingCustomers(input, position)) {
@@ -86,19 +87,27 @@ public class CustomerSpinner extends MultiSelectionSpinner {
                        setSelection(getStringAllCustomers());
                        mProductItems.get(position).setProductCustomerList(getSelectedStrings());
                        mUpdateCallback.onUpdateBill();
-
                    }
                 }
             });
         } else {
             builder.setTitle("Selecione os consumidores:")
                     .setMultiChoiceItems(mItems, mSelection, this);
+            //TODO fix method publicSelectedItemString in MultiSelectionSpinner
+            //não está eficiente
+         final String display = publicBuildSelectedItemString();
 
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface arg0, int arg1) {
                     mProductItems.get(position).setProductCustomerList(getSelectedStrings());
                     mUpdateCallback.onUpdateBill();
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                   updateDisplay(display);
                 }
             });
            /* builder.setOnDismissListener(new DialogInterface.OnDismissListener() {

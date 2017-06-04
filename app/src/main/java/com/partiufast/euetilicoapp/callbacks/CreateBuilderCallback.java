@@ -10,5 +10,7 @@ import android.widget.EditText;
 
 public interface CreateBuilderCallback {
     public void onCreateBuilder(Context context, AlertDialog.Builder builder, EditText input);
+    public void onClickProductCard(int position);
+
 
 }

@@ -53,4 +53,8 @@
     <string name="product_removed">Produto dispensado</string>
     <string name="undo">DESFAZER</string>
     <string name="total_cost_label">Custo do consumo total:</string>
+    <string name="action_tip">Taxa de Conveniência</string>
+    <string name="action_share">Compartilhar Comanda</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">OK</string>
 </resources>

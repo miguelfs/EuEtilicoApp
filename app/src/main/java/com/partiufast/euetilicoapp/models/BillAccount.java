@@ -1,12 +1,10 @@
 package com.partiufast.euetilicoapp.models;
 
-import android.location.Location;
-import android.util.Log;
-
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -17,8 +15,11 @@ public class BillAccount {
     private ArrayList<CustomerItem> mCustomerItemList = new ArrayList<CustomerItem>();
     boolean is10PercentOn;
     private BigDecimal mTotalPrice;
-    private final static BigDecimal TENPERCENT = new BigDecimal(1.1);
+    private BigDecimal mTipValue = new BigDecimal(1.1).setScale(2, BigDecimal.ROUND_HALF_DOWN);
 
+    private String mBillCode;
+    private SecureRandom mRandom = new SecureRandom();
+    private int mActiveUsers = 1;
 
 
     public BillAccount() {
@@ -61,7 +62,7 @@ public class BillAccount {
         return is10PercentOn;
     }
 
-    public void setIs10PercentOn(boolean is10PercentOn) {
+    public void setIsTipOn(boolean is10PercentOn) {
         this.is10PercentOn = is10PercentOn;
         for (int personIterator = 0; personIterator < mCustomerItemList.size(); personIterator++)
             mCustomerItemList.get(personIterator).setIs10PercentOn(is10PercentOn);
@@ -86,10 +87,25 @@ public class BillAccount {
         updatePersonListPrices();
     }
 
+    public int getTipValueAsInt() {
+        return Integer.parseInt(mTipValue.toString().substring(mTipValue.toString().indexOf(".")+1));
+    }
+
+    public void setTipValue(BigDecimal tipValue) {
+        mTipValue = tipValue;
+    }
+
+    public void setTipValue(int tipValue) {
+        String value = "1." + tipValue;
+        if (tipValue < 10)
+            value = "1.0"+ tipValue;
+        mTipValue = new BigDecimal(value);
+    }
+
     private BigDecimal tip(){
         BigDecimal tipValue = new BigDecimal(1.0);
         if (is10PercentOn)
-            tipValue = TENPERCENT;
+            tipValue = mTipValue;
         return tipValue;
     }
 
@@ -146,4 +162,27 @@ public class BillAccount {
     }
 
 
+    public void generateBillCode() {
+        mBillCode = new BigInteger(130, mRandom).toString(32).substring(0,7);
+    }
+
+    public void setBillCode(String billCode) {
+        if (!billCode.equals("")) {
+            mBillCode = billCode;
+        }else{
+            generateBillCode();
+        }
+    }
+
+    public String getBillCode() {
+        return mBillCode;
+    }
+
+    public int getActiveUsers() {
+        return mActiveUsers;
+    }
+
+    public void setActiveUsers(int activeUsers) {
+        mActiveUsers = activeUsers;
+    }
 }

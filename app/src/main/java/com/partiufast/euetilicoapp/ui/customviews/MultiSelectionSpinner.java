@@ -183,6 +183,13 @@ public class MultiSelectionSpinner extends Spinner implements
         return selection;
     }
 
+    public void updateDisplay(String display){
+        simple_adapter.clear();
+        simple_adapter.add(display);
+}
+    public String publicBuildSelectedItemString(){
+        return buildSelectedItemString();
+    }
     private String buildSelectedItemString() {
         StringBuilder sb = new StringBuilder();
         boolean foundOne = false;

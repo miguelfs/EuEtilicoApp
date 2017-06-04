@@ -21,8 +21,6 @@ public class CustomerItem implements Parcelable {
     private BigDecimal mPrice;
     private List<ProductItem> mProductItemList = new ArrayList<>();
 
-
-
     private static BigDecimal TENPERCENT = new BigDecimal(1.1);
     boolean mIs10PercentOn;
 

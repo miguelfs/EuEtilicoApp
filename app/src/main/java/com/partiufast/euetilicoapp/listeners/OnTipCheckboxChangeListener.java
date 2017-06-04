@@ -19,7 +19,7 @@ public class OnTipCheckboxChangeListener implements CompoundButton.OnCheckedChan
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        mBillAccount.setIs10PercentOn(compoundButton.isChecked());
+        mBillAccount.setIsTipOn(compoundButton.isChecked());
         mUpdateCallback.onUpdateBill();
     }
 }
