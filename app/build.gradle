@@ -8,8 +8,8 @@ android {
         applicationId "com.partiufast.euetilicoapp"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 17
-        versionName "1.0.4"
+        versionCode 18
+        versionName "1.0.5"
     }
 
     buildTypes {
@@ -38,6 +38,3 @@ dependencies {
     compile 'com.github.clans:fab:1.6.4'
     testCompile 'junit:junit:4.12'
 }
-
-
-apply plugin: 'com.google.gms.google-services'

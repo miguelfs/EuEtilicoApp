@@ -127,31 +127,10 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
         addProductFab.setOnClickListener(new FabAddProductClickLisntener(mBillAccount.getProductItemList(), parentFAB, mViewPager));
         FloatingActionButton addCustomerFab = (FloatingActionButton) findViewById(R.id.add_customer_fab);
         addCustomerFab.setOnClickListener(new FabAddCustomerClickListener(mBillAccount.getCustomerItemList(), parentFAB));
-        /*getBillReference().child("active_users").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mBillAccount.setActiveUsers( Integer.parseInt(dataSnapshot.getValue().toString()));
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
     }
 
-  /*  private DatabaseReference getBillReference(){
-        return mDatabase.getReference().child("bills").child(mBillAccount.getBillCode());
-    }
 
-    private DatabaseReference getBillActiveUsersReference(){
-        return mDatabase.getReference().child("bills").child(mBillAccount.getBillCode()).child("active_users");
-    }*/
-
- /*   private void addBillToFirebaseDB() {
-        getBillActiveUsersReference().setValue(1);
-    }
-*/
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -343,41 +322,6 @@ public class MainActivity extends AppCompatActivity implements UpdatePricesCallb
             AlertDialog dialog = builder.create();
             dialog.show();
         }
-    /*    if (id == R.id.action_share){
-            final EditText editText = new EditText(this);
-
-            editText.setText(mBillAccount.getBillCode());
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.CustomDialog));
-            builder.setTitle("Compartilhar Comanda");
-            builder.setMessage("Insira o código fornecido por seus amigos, ou compartilhe com eles o código abaixo:");
-            builder.setView(editText);
-            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                     if (!editText.getText().toString().equals(mBillAccount.getBillCode())){
-                         mDatabase.getReference().child("bills").addListenerForSingleValueEvent(new ValueEventListener() {
-                             @Override
-                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                 mBillAccount.setBillCode(editText.getText().toString());
-                                if (dataSnapshot.hasChild(editText.getText().toString())){
-                                    int active_users = Integer.parseInt(dataSnapshot.child(editText.getText().toString()).child("active_users").getValue().toString()) + 1;
-                                 mDatabase.getReference().child("bills").child(editText.getText().toString()).child("active_users")
-                                         .setValue(active_users);
-                                }
-                             }
-
-                             @Override
-                             public void onCancelled(DatabaseError databaseError) {
-
-                             }
-                         });
-                    }
-                }
-            });
-            builder.setNegativeButton(R.string.cancel, null);
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }*/
 
         return true;
     }
